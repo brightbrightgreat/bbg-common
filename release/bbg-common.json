@@ -1,6 +1,6 @@
 {
   "Name": "bbg-common",
-  "Version": "0.5.0",
+  "Version": "0.5.1",
   "DownloadURI": "https:\/\/brightbrightgreat.com\/repo\/bbg-common.zip",
   "Requires": "4.5",
   "Tested": "4.8",
@@ -12,6 +12,23 @@
   "Banner": "",
   "Screenshots": {},
   "Changelog": [
+    {
+      "version": "0.5.1",
+      "notes": [
+        {
+          "type": "fix",
+          "note": "Various Javascript-related fixes."
+        },
+        {
+          "type": "new",
+          "note": "SVG icon handler."
+        },
+        {
+          "type": "new",
+          "note": "Discourage robot crawling under testmode."
+        }
+      ]
+    },
     {
       "version": "0.5.0",
       "notes": [
