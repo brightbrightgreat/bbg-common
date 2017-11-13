@@ -6,13 +6,11 @@
   "Tested": "4.8",
   "License": "WTFPL",
   "First": "2017-10-01",
-  "Home": "https:\/\/github.com\/brightbrightgreat\/wpskel",
+  "Home": "https:\/\/github.com\/brightbrightgreat\/bbg-common",
   "About": "",
   "Icon": "",
   "Banner": "",
-  "Screenshots": {
-
-  },
+  "Screenshots": {},
   "Changelog": [
     {
       "version": "0.5.0",
