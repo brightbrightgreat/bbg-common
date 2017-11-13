@@ -26,4 +26,5 @@ add_action('plugins_loaded', array(BBGCOMMON_BASE_CLASS . 'ajax', 'init'));
 add_action('plugins_loaded', array(BBGCOMMON_BASE_CLASS . 'upgrade', 'init'));
 add_action('plugins_loaded', array(BBGCOMMON_BASE_CLASS . 'base\\partial', 'init'));
 add_action('plugins_loaded', array(BBGCOMMON_BASE_CLASS . 'fields', 'init'));
+add_action('plugins_loaded', array(BBGCOMMON_BASE_CLASS . 'svg', 'init'));
 add_action('plugins_loaded', array(BBGCOMMON_BASE_CLASS . 'typetax', 'init'));
