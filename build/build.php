@@ -12,7 +12,7 @@
 
 // A few paths we'll need.
 define('BUILD_DIR', dirname(__FILE__) . '/');
-define('PLUGIN_BASE', dirname(BUILD_DIR) . '/plugin/bbg-common/');
+define('PLUGIN_BASE', dirname(BUILD_DIR) . '/bbg-common/');
 define('VENDOR_BASE', PLUGIN_BASE . 'lib/vendor/');
 
 // A few files we'll need.

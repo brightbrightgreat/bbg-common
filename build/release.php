@@ -12,9 +12,9 @@
  */
 
 define('BUILD_DIR', dirname(__FILE__) . '/');
-define('PLUGIN_BASE', dirname(BUILD_DIR) . '/plugin/bbg-common/');
-define('RELEASE_BASE', BUILD_DIR . '/bbb-common/');
-define('RELEASE_DIR', dirname(BUILD_DIR) . '/plugin/release/');
+define('PLUGIN_BASE', dirname(BUILD_DIR) . '/bbg-common/');
+define('RELEASE_BASE', BUILD_DIR . 'bbb-common/');
+define('RELEASE_DIR', dirname(BUILD_DIR) . '/release/');
 
 
 

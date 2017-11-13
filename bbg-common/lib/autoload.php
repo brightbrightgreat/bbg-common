@@ -128,9 +128,10 @@ spl_autoload_register(
                 'bbg\\wp\\common\\fields' => '/bbg/wp/common/fields.php',
                 'bbg\\wp\\common\\hook' => '/bbg/wp/common/hook.php',
                 'bbg\\wp\\common\\meta' => '/bbg/wp/common/meta.php',
+                'bbg\\wp\\common\\social' => '/bbg/wp/common/social.php',
                 'bbg\\wp\\common\\typetax' => '/bbg/wp/common/typetax.php',
                 'bbg\\wp\\common\\upgrade' => '/bbg/wp/common/upgrade.php',
-								'bbg\\wp\\common\\utility' => '/bbg/wp/common/utility.php'
+                'bbg\\wp\\common\\utility' => '/bbg/wp/common/utility.php'
             );
         }
         if (isset($classes[$class])) {
