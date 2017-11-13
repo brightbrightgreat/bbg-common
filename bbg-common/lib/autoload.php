@@ -129,6 +129,7 @@ spl_autoload_register(
                 'bbg\\wp\\common\\hook' => '/bbg/wp/common/hook.php',
                 'bbg\\wp\\common\\meta' => '/bbg/wp/common/meta.php',
                 'bbg\\wp\\common\\social' => '/bbg/wp/common/social.php',
+                'bbg\\wp\\common\\svg' => '/bbg/wp/common/svg.php',
                 'bbg\\wp\\common\\typetax' => '/bbg/wp/common/typetax.php',
                 'bbg\\wp\\common\\upgrade' => '/bbg/wp/common/upgrade.php',
                 'bbg\\wp\\common\\utility' => '/bbg/wp/common/utility.php'
