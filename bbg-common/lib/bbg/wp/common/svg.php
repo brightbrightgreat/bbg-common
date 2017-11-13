@@ -103,7 +103,7 @@ class svg extends base\hook {
 		}
 
 		// Our sprite code!
-		echo '<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="hide-safe">';
+		echo '<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="m:hide-safe">';
 		foreach (static::$_sprite as $svg) {
 			echo '<symbol ' . ($svg['viewBox'] ? 'viewBox="' . esc_attr($svg['viewBox']) . '" ' : '') . 'id="' . esc_attr($svg['id']) . '">' . $svg['content'] . '</symbol>';
 		}
