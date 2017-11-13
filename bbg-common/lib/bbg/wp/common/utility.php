@@ -79,30 +79,13 @@ class utility {
 	/**
 	 * Get SVG Icon
 	 *
-	 * Shorthand function to return the proper HTML
-	 * code for an icon from our sprite.
+	 * Alias for svg::get_icon().
 	 *
 	 * @param string $icon Icon.
-	 * @param array $class Class(es).
+	 * @param array $classes Class(es).
 	 * @return string $svg HTML.
 	 */
-	public static function get_icon($icon, $class=array()) {
-
-		r_cast::array($class);
-
-		$svg = \blobfolio\common\image::clean_svg(BBG_THEME_PATH . 'dist/svgs/' . $icon . '.svg', array(
-			'clean_styles'=>true,
-			'fix_dimensions'=>true,
-			'rewrite_styles'=>true,
-			'save'=>true,
-			'strip_data'=>true,
-			'strip_title'=>true,
-		));
-
-		$class[] = 'i_' . $icon;
-
-		$svg = str_replace('<svg', '<svg class="' . implode(' ', $class) . '" ', $svg);
-
-		return $svg;
+	public static function get_icon(string $icon, $classes=null) {
+		return svg::get_icon($icon, $classes);
 	}
 }
