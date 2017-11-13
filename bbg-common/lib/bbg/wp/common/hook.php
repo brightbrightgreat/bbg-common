@@ -41,6 +41,29 @@ class hook extends base\hook {
 
 
 
+	/**
+	 * Special Init
+	 *
+	 * Extra init methods that require a bit of manual conditioning.
+	 *
+	 * @return void Nothing.
+	 */
+	protected static function special_init() {
+		// Discourage search engines from indexing certain pages. Seems
+		// like as good a place as any to add it.
+		if (
+			BBG_TESTMODE ||
+			(
+				isset($_SERVER['REQUEST_URI']) &&
+				preg_match('#^/(account|checkout)#', $_SERVER['REQUEST_URI'])
+			)
+		) {
+			add_action('wp_head', 'wp_no_robots');
+		}
+	}
+
+
+
 	// -----------------------------------------------------------------
 	// Header Business
 	// -----------------------------------------------------------------

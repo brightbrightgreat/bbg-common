@@ -12,9 +12,9 @@
  */
 
 define('BUILD_DIR', dirname(__FILE__) . '/');
-define('PLUGIN_BASE', dirname(BUILD_DIR) . '/plugin/bbg-common/');
-define('RELEASE_BASE', BUILD_DIR . '/bbb-common/');
-define('RELEASE_DIR', dirname(BUILD_DIR) . '/plugin/release/');
+define('PLUGIN_BASE', dirname(BUILD_DIR) . '/bbg-common/');
+define('RELEASE_BASE', BUILD_DIR . 'bbb-common/');
+define('RELEASE_DIR', dirname(BUILD_DIR) . '/release/');
 
 
 
@@ -100,7 +100,7 @@ if (class_exists('ZipArchive')) {
 		if (!$file->isDir()) {
 			// Get real and relative path for current file.
 			$full = $file->getRealPath();
-			$relative = 'bbg-common/' . substr($full, strlen(RELEASE_BASE) - 1);
+			$relative = 'bbg-common' . substr($full, strlen(RELEASE_BASE) - 1);
 
 			// Add current file to archive.
 			$zip->addFile($full, $relative);
