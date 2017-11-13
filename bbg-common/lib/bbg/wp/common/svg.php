@@ -34,7 +34,7 @@ class svg extends base\hook {
 	 */
 	public static function get_icon(string $icon, $classes=null) {
 		// Bad icon.
-		if (!defined(BBG_THEME_PATH) || !file_exists(BBG_THEME_PATH . "dist/svgs/$icon.svg")) {
+		if (!defined('BBG_THEME_PATH') || !file_exists(BBG_THEME_PATH . "dist/svgs/$icon.svg")) {
 			return false;
 		}
 
