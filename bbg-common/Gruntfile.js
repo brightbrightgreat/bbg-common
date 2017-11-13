@@ -32,6 +32,7 @@ module.exports = function(grunt) {
 					'js/vue.min.js': [
 						'src/js/lib/vue.min.js',
 						'src/js/lib/vue-resource.min.js',
+						'src/js/custom/vue-ajax.js',
 						'src/js/custom/vue-filters.js',
 						'src/js/custom/vue-methods.js',
 						'src/js/lib/vue-blob-forms.min.js'
