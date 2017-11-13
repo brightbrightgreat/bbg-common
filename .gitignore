@@ -12,7 +12,6 @@ package-lock.json
 dist/*.css
 source/*.css
 *.DS_Store
-*.min.js
 *.sketch
 *.map
 *.psd
