@@ -1,0 +1,13 @@
+{
+  "name": "bbg-common",
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-compress": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-notify": "*",
+    "grunt-blobfolio": "git+ssh://git@blobfolio.com:3417/grunt-blobfolio"
+  }
+}

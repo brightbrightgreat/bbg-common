@@ -1,0 +1,108 @@
+<?php
+/**
+ * BBG Common: Utility
+ *
+ * Functions that don't really fit anywhere else ¯\_(ツ)_/¯
+ *
+ * @package brightbrightgreat/bbg-common
+ * @author	Bright Bright Great <sayhello@brightbrightgreat.com>
+ */
+
+namespace bbg\wp\common;
+
+use \blobfolio\common\data as data;
+use \blobfolio\common\format as v_format;
+use \blobfolio\common\ref\cast as r_cast;
+use \blobfolio\common\ref\format as r_format;
+use \blobfolio\common\ref\sanitize as r_sanitize;
+
+class utility {
+
+	// Link structure.
+	const LINK = array(
+		'link_type'=>'',
+		'link_text'=>'',
+		'link_internal'=>array(),
+		'link_email'=>'',
+		'link_subject'=>'',
+		'link_external'=>'',
+		'link_download'=>'',
+		'item_classes'=>'',
+	);
+
+	/**
+	 * Get Link
+	 *
+	 * @param array $link Link array.
+	 * @return array Link.
+	 */
+	public static function get_link($link) {
+		$link = data::parse_args($link, static::LINK);
+
+		// Some additional sanitizing.
+		r_sanitize::email($link['link_email']);
+		r_sanitize::whitespace($link['link_subject']);
+		r_sanitize::url($link['link_url']);
+		r_sanitize::url($link['download']);
+		r_cast::array($link['item_classes']);
+
+		$link_clean = array(
+			'type'=>$link['link_type'],
+			'text'=>$link['link_text'],
+			'classes'=>$link['item_classes'],
+			'url'=>get_permalink($link['link_internal'][0]['id']),
+			'target'=>'_self',
+			'download'=>false,
+		);
+
+		switch ($link['link_type']) {
+			case 'email':
+				$link_clean['url'] = 'mailto:' . $link['link_email'] . ($link['link_subject'] ? '?subject=' . urlencode($link['link_subject']) : '');
+				$link_clean['classes'][] = 'js_social-share';
+				break;
+
+			case 'external':
+				$link_clean['url'] = $link['link_external'];
+				$link_clean['target'] = '_blank';
+				break;
+
+			case 'download':
+				$link_clean['url'] = wp_get_attachment_url($link['link_download']);
+				$link_clean['download'] = true;
+				break;
+		}
+
+		return $link_clean;
+	}
+
+
+	/**
+	 * Get SVG Icon
+	 *
+	 * Shorthand function to return the proper HTML
+	 * code for an icon from our sprite.
+	 *
+	 * @param string $icon Icon.
+	 * @param array $class Class(es).
+	 * @return string $svg HTML.
+	 */
+	public static function get_icon($icon, $class=array()) {
+
+		r_cast::array($class);
+
+		$svg = \blobfolio\common\image::clean_svg(BBG_THEME_PATH . 'dist/svgs/' . $icon . '.svg', array(
+			'clean_styles'=>true,
+			'fix_dimensions'=>true,
+			'rewrite_styles'=>true,
+			'save'=>true,
+			'strip_data'=>true,
+			'strip_title'=>true,
+		));
+
+		$class[] = 'i_' . $icon;
+
+		$svg = str_replace('<svg', '<svg class="' . implode(' ', $class) . '" ', $svg);
+
+		return $svg;
+	}
+}

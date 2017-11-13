@@ -1,0 +1,27 @@
+{
+  "Name": "bbg-common",
+  "Version": "0.5.0",
+  "DownloadURI": "https:\/\/brightbrightgreat.com\/repo\/bbg-common.zip",
+  "Requires": "4.5",
+  "Tested": "4.8",
+  "License": "WTFPL",
+  "First": "2017-10-01",
+  "Home": "https:\/\/github.com\/brightbrightgreat\/wpskel",
+  "About": "",
+  "Icon": "",
+  "Banner": "",
+  "Screenshots": {
+
+  },
+  "Changelog": [
+    {
+      "version": "0.5.0",
+      "notes": [
+        {
+          "type": "new",
+          "note": "Initial release!"
+        }
+      ]
+    }
+  ]
+}

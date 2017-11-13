@@ -1,0 +1,20 @@
+# Folders
+node_modules
+dev
+.sass-cache
+
+# Files
+secrets.json
+wp-config.php
+package-lock.json
+
+# Globs
+dist/*.css
+source/*.css
+*.DS_Store
+*.min.js
+*.sketch
+*.map
+*.psd
+*.ai
+*.gz
