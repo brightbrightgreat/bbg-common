@@ -37,6 +37,15 @@ module.exports = function(grunt) {
 						'src/js/custom/vue-methods.js',
 						'src/js/lib/vue-blob-forms.min.js'
 					],
+					// A testmode Vue bundle.
+					'js/vue-testmode.min.js': [
+						'src/js/lib/vue.js',
+						'src/js/lib/vue-resource.min.js',
+						'src/js/custom/vue-ajax.js',
+						'src/js/custom/vue-filters.js',
+						'src/js/custom/vue-methods.js',
+						'src/js/lib/vue-blob-forms.min.js'
+					],
 					// Our main Vue file.
 					'js/vue-core.min.js': [
 						'src/js/custom/vue-core.js'

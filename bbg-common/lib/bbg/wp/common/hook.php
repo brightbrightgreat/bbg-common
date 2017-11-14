@@ -109,9 +109,10 @@ class hook extends base\hook {
 		wp_enqueue_script('bbg-common-plugins-js');
 
 		// Our main Vue bundle.
+		$vue = BBG_TESTMODE ? "{$js_url}vue-testmode.min.js" : "{$js_url}vue.min.js";
 		wp_register_script(
 			'bbg-common-vue-deps-js',
-			"{$js_url}vue.min.js",
+			$vue,
 			array(),
 			static::ASSET_VERSION,
 			true
