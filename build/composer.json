@@ -18,7 +18,8 @@
     }
   ],
   "require": {
-		"htmlburger/carbon-fields": "^2.1"
+		"htmlburger/carbon-fields": "^2.1",
+    "drewm/mailchimp-api": "^2.2"
   },
   "config": {
     "vendor-dir": "lib\/vendor",
