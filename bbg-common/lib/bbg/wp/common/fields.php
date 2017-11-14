@@ -55,7 +55,7 @@ abstract class fields extends base\hook {
 		Container::make( 'post_meta', 'og', 'Social Sharing - Open Graph Settings' )
 
 		// Display location.
-		->where( 'post_type', 'IN', array('page', 'post') )
+		->where('post_type', 'IN', array('page', 'post'))
 
 		// Set up fields.
 		->add_fields(array(
