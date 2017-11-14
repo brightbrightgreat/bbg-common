@@ -1,6 +1,6 @@
 {
   "Name": "bbg-common",
-  "Version": "0.5.1",
+  "Version": "0.5.2",
   "DownloadURI": "https:\/\/brightbrightgreat.com\/repo\/bbg-common.zip",
   "Requires": "4.5",
   "Tested": "4.8",
@@ -10,8 +10,23 @@
   "About": "",
   "Icon": "",
   "Banner": "",
-  "Screenshots": {},
+  "Screenshots": {
+
+  },
   "Changelog": [
+    {
+      "version": "0.5.2",
+      "notes": [
+        {
+          "type": "new",
+          "note": "Mailchimp integration."
+        },
+        {
+          "type": "new",
+          "note": "Serialized Datastore for Carbon Fields."
+        }
+      ]
+    },
     {
       "version": "0.5.1",
       "notes": [
