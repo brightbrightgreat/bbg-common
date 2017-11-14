@@ -3,11 +3,11 @@
  * Various tools for a happy and effective WordPress theme.
  *
  * @package BBG Common
- * @version 0.5.1
+ * @version 0.5.2
  *
  * @wordpress-plugin
  * Plugin Name: BBG Common
- * Version: 0.5.1
+ * Version: 0.5.2
  * Plugin URI: https://github.com/brightbrightgreat/wpskel
  * Description: Various tools for a happy and effective WordPress theme.
  * Text Domain: bbg-common
