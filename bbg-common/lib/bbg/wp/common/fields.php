@@ -24,6 +24,8 @@ abstract class fields extends base\hook {
 			'fields_init'=>null,
 		),
 		'carbon_fields_register_fields'=>array(
+			'tracking'=>null,
+			'mailchimp'=>null,
 			'og_meta'=>null,
 		),
 	);
@@ -70,6 +72,46 @@ abstract class fields extends base\hook {
 
 			Field::make('image', 'og_image', 'Image'),
 		));
+	}
+
+
+	/**
+	 * Tracking Code
+	 *
+	 * @return void Nothing.
+	 */
+	public static function tracking() {
+		Container::make('theme_options', 'Analytics & Tracking')
+		->set_page_file('site-tracking')
+		->set_icon('dashicons-chart-bar')
+		->add_tab(
+			'Google Tag Manager',
+			array(
+				Field::make('text', 'gtm_id', 'ID')
+				->set_attribute('placeholder', 'GTM-#######'),
+			)
+		);
+	}
+
+
+	/**
+	 * MailChimp
+	 *
+	 * @return void Nothing.
+	 */
+	public static function mailchimp() {
+		Container::make('theme_options', 'MailChimp')
+		->set_page_file('site-mailchimp')
+		->set_icon('dashicons-email-alt')
+		->add_tab(
+			'MailChimp',
+			array(
+				Field::make('text', 'mailchimp_api_key', 'API Key'),
+
+				Field::make('text', 'mailchimp_list_id', 'List ID')
+				->set_help_text('This is the default mailing list.'),
+			)
+		);
 	}
 
 
