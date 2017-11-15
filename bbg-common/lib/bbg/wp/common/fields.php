@@ -87,7 +87,7 @@ abstract class fields extends base\hook {
 		->add_tab(
 			'Google Tag Manager',
 			array(
-				Field::make('text', 'gtm_id', 'ID')
+				Field::make('text', 'gtm', 'ID')
 				->set_attribute('placeholder', 'GTM-#######'),
 			)
 		);
