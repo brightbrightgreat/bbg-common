@@ -22,9 +22,12 @@ class hook extends base\hook {
 			'scripts'=>null,
 		),
 		'wp_footer'=>array(
+			'gtm_fallback'=>null,
 			'js_env'=>array('priority'=>0),
 		),
 		'wp_head'=>array(
+			'gtm'=>array('priority'=>550),
+			'gtm_data'=>array('priority'=>500),
 			'inline_css'=>null,
 		),
 		'after_setup_theme'=>array(
@@ -38,6 +41,8 @@ class hook extends base\hook {
 			'body_class'=>null,
 		),
 	);
+
+	protected static $gtm;
 
 
 
@@ -257,4 +262,133 @@ class hook extends base\hook {
 	}
 
 	// ----------------------------------------------------------------- end config
+
+
+
+	// -----------------------------------------------------------------
+	// Google Tag Manager
+	// -----------------------------------------------------------------
+
+	/**
+	 * Has GTM?
+	 *
+	 * GTM code is only relevant if the site uses it. We should also
+	 * disable it for WP users and testing sites.
+	 *
+	 * @return string|bool Code or false.
+	 */
+	protected static function get_gtm() {
+		if (is_null(static::$gtm)) {
+			static::$gtm = carbon_get_theme_option('gtm');
+			if (!static::$gtm) {
+				static::$gtm = false;
+			}
+		}
+
+		if (
+			static::$gtm &&
+			!is_user_loged_in() &&
+			!BBG_TESTMODE
+		) {
+			return static::$gtm;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Main GTM Tracking
+	 *
+	 * @return void Nothing.
+	 */
+	public static function gtm() {
+		// Not applicable?
+		if (false === ($gtm = static::get_gtm())) {
+			return;
+		}
+		?>
+		<!-- Google Tag Manager -->
+		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer','<?=$gtm?>');</script>
+		<!-- End Google Tag Manager -->
+		<?php
+	}
+
+	/**
+	 * GTM DataLayer
+	 *
+	 * This populates various information about the request, and can be
+	 * extended by themes to provide more/different data.
+	 *
+	 * @return void Nothing.
+	 */
+	public static function gtm_data() {
+		// Not applicable?
+		if (false === ($gtm = static::get_gtm())) {
+			return;
+		}
+
+		global $template;
+
+		$out = array(
+			'pageSlug'=>'',
+			'pageType'=>'other',
+			'pageTemplate'=>$template ? basename($template) : '',
+			'pageId'=>0,
+		);
+
+		// Single page.
+		if (is_singular()) {
+			global $post;
+			$out['pageSlug'] = $post->post_name;
+			$out['pageId'] = $post->ID;
+			$out['pageType'] = $post->post_type;
+		}
+		// Archive.
+		elseif (is_archive()) {
+			$out['pageType'] = 'archive';
+		}
+		// Nothing.
+		elseif (is_404()) {
+			$out['pageType'] = '404';
+		}
+
+		// Let themes modify this data.
+		$data = array($out);
+		$data = apply_filters('bbg_common_gtm_datalayer', $data);
+
+		if (is_array($data) && count($data)) {
+			r_sanitize::utf8($data);
+
+			echo '<!-- gtm data --><script>var dataLayer = dataLayer || [];';
+			foreach ($data as $v) {
+				if (is_array($v) && count($v)) {
+					echo "\ndataLayer.push(" . json_encode($v) . ');';
+				}
+			}
+			echo '</script>';
+		}
+	}
+
+	/**
+	 * Fallback GTM Code
+	 *
+	 * @return void Nothing.
+	 */
+	public static function gtm_fallback() {
+		// Not applicable?
+		if (false === ($gtm = static::get_gtm())) {
+			return;
+		}
+		?>
+		<!-- Google Tag Manager (noscript) -->
+		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MVF523C" height="0" width="0" style="display:none; visibility:hidden"></iframe></noscript>
+		<!-- End Google Tag Manager (noscript) -->
+		<?php
+	}
+
+	// ----------------------------------------------------------------- end gtm
 }
