@@ -24,7 +24,7 @@ abstract class fields extends base\hook {
 			'fields_init'=>null,
 		),
 		'carbon_fields_register_fields'=>array(
-			'register_fields'=>null,
+			'og_meta'=>null,
 		),
 	);
 
@@ -43,19 +43,16 @@ abstract class fields extends base\hook {
 
 
 	/**
-	 * Register fields
+	 * OG Meta (individual content)
 	 *
 	 * @return void Nothing.
 	 */
-	public static function register_fields() {
-		// ---------------------------------------------------------------------
-		// Open Graph Fields
-		// ---------------------------------------------------------------------
-		// Set up container.
-		Container::make( 'post_meta', 'og', 'Social Sharing - Open Graph Settings' )
+	public static function og_meta() {
+		Container::make('post_meta', 'og', 'Social Sharing - Open Graph Settings')
 
 		// Display location.
-		->where('post_type', 'IN', array('page', 'post'))
+		->where('post_type', 'IN', apply_filters('cf_og_meta_post_types', array('page', 'post')))
+		->where('post_id', 'NOT IN', apply_filters('cf_og_meta_exclude', array(0)))
 
 		// Set up fields.
 		->add_fields(array(
