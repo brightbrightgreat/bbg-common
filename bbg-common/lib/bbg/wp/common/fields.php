@@ -110,6 +110,12 @@ abstract class fields extends base\hook {
 
 				Field::make('text', 'mailchimp_list_id', 'List ID')
 				->set_help_text('This is the default mailing list.'),
+
+				Field::make('rich_text', 'mailchimp_subscribe', 'Subscribe Message')
+				->set_help_text('This text will be shown when a user joins the list.'),
+
+				Field::make('rich_text', 'mailchimp_unsubscribe', 'Unsubscribe Message')
+				->set_help_text('This text will be shown when a user leaves the list.'),
 			)
 		);
 	}
