@@ -56,7 +56,7 @@ class social {
 			static::$social = array();
 
 			// Set our order appropriately.
-			$networks = (count($order) ?  $order : static::SOCIAL_NETWORKS);
+			$networks = (count($order) ? $order : static::SOCIAL_NETWORKS);
 
 			// Loop through networks in the order specified.
 			foreach ($networks as $v) {
