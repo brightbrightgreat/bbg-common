@@ -96,6 +96,11 @@ class hook extends base\hook {
 	/**
 	 * Add Vue Dependency
 	 *
+	 * For Vue in particular, there might be dependencies in the plugin
+	 * and theme. Since the plugin handles the actual enqueing of Vue,
+	 * this method can be used by themes to make sure their deps are
+	 * properly registered.
+	 *
 	 * @param string $uri URI.
 	 * @return void Nothing.
 	 */
