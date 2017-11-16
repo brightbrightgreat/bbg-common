@@ -19,7 +19,7 @@ class hook extends base\hook {
 	// Actions: hook=>[callbacks].
 	const ACTIONS = array(
 		'wp_enqueue_scripts'=>array(
-			'scripts'=>null,
+			'scripts'=>array('priority'=>100),
 		),
 		'wp_footer'=>array(
 			'gtm_fallback'=>null,
@@ -43,6 +43,7 @@ class hook extends base\hook {
 	);
 
 	protected static $gtm;
+	protected static $vue_deps = array();
 
 
 
@@ -93,6 +94,21 @@ class hook extends base\hook {
 	}
 
 	/**
+	 * Add Vue Dependency
+	 *
+	 * For Vue in particular, there might be dependencies in the plugin
+	 * and theme. Since the plugin handles the actual enqueing of Vue,
+	 * this method can be used by themes to make sure their deps are
+	 * properly registered.
+	 *
+	 * @param string $uri URI.
+	 * @return void Nothing.
+	 */
+	public static function add_vue_dep(string $uri) {
+		static::$vue_deps[] = $uri;
+	}
+
+	/**
 	 * Enqueue Scripts
 	 *
 	 * @return void Nothing.
@@ -101,7 +117,6 @@ class hook extends base\hook {
 		global $post;
 
 		$js_url = BBGCOMMON_PLUGIN_URL . 'js/';
-		$vue_deps = array();
 
 		// Global plugins.
 		wp_register_script(
@@ -122,7 +137,8 @@ class hook extends base\hook {
 			static::ASSET_VERSION,
 			true
 		);
-		$vue_deps[] = 'bbg-common-vue-deps-js';
+		// Bump this one thing to the top of the list.
+		array_unshift(static::$vue_deps, 'bbg-common-vue-deps-js');
 
 		// A phone number format helper. This conditionally enqueued
 		// because of its size. To turn it on, define the USE_PHONE_JS
@@ -135,7 +151,7 @@ class hook extends base\hook {
 			true
 		);
 		if (defined('USE_PHONE_JS') && USE_PHONE_JS) {
-			$vue_deps[] = 'blob-phone-js';
+			static::$vue_deps[] = 'blob-phone-js';
 		}
 
 		// Our main Vue file. This is enqueued last, and depends on all
@@ -144,7 +160,7 @@ class hook extends base\hook {
 		wp_register_script(
 			'bbg-common-vue-js',
 			"{$js_url}vue-core.min.js",
-			apply_filters('bbg_common_vue_deps', $vue_deps),
+			static::$vue_deps,
 			static::ASSET_VERSION,
 			true
 		);
