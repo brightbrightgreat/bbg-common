@@ -20,6 +20,7 @@ class hook extends base\hook {
 	const ACTIONS = array(
 		'wp_enqueue_scripts'=>array(
 			'scripts'=>array('priority'=>100),
+			'styles'=>array('priority'=>100),
 		),
 		'wp_footer'=>array(
 			'gtm_fallback'=>null,
@@ -85,7 +86,13 @@ class hook extends base\hook {
 		ob_start();
 		?>
 		<style>
-			[v-cloak] { display: none; }
+			[v-cloak],
+			[hidden] { display: none; }
+
+			.fade-enter-active,
+			.fade-leave-active { transition: opacity .5s; }
+			.fade-enter,
+			.fade-leave-to { opacity: 0; }
 		</style>
 		<?php
 		$out = ob_get_clean();
@@ -154,6 +161,44 @@ class hook extends base\hook {
 			static::$vue_deps[] = 'blob-phone-js';
 		}
 
+		// Let's look for theme assets based on the current page.
+		if (defined('BBG_THEME_URL') && defined('BBG_THEME_PATH')) {
+			global $template;
+			$specific = array();
+
+			// Look for a template-specific JS file.
+			if ($template) {
+				$specific[] = basename(preg_replace('/\.php$/i', '', $template));
+			}
+
+			// Look for type-slug JS file.
+			if (is_singular()) {
+				global $post;
+				$specific[] = "{$post->post_type}-{$post->post_name}";
+			}
+
+			if (count($specific)) {
+				// What cache-breaking version should we use?
+				$version = defined('BBG_THEME_ASSET_VERSION') ? BBG_THEME_ASSET_VERSION : static::ASSET_VERSION;
+
+				// Enqueue whatever specific files exist, if any. We'll
+				// assume these are Vue dependencies.
+				foreach ($specific as $v) {
+					if (file_exists(BBG_THEME_PATH . "dist/js/$v.min.js")) {
+						$slug = md5($v) . '-js';
+						wp_register_script(
+							$slug,
+							BBG_THEME_URL . "dist/js/$v.min.js",
+							array('bbg-common-vue-deps-js'),
+							$version,
+							true
+						);
+						static::$vue_deps[] = $slug;
+					}
+				}
+			}
+		}
+
 		// Our main Vue file. This is enqueued last, and depends on all
 		// other Vue-related pieces. To add a dependency from a theme,
 		// etc., use the 'bbg_common_vue_deps' filter.
@@ -165,6 +210,51 @@ class hook extends base\hook {
 			true
 		);
 		wp_enqueue_script('bbg-common-vue-js');
+	}
+
+	/**
+	 * Enqueue Styles
+	 *
+	 * @return void Nothing.
+	 */
+	public static function styles() {
+		// Look for theme assets based on the loaded page.
+		if (defined('BBG_THEME_URL') && defined('BBG_THEME_PATH')) {
+			global $template;
+			$specific = array();
+
+			// Look for a template-specific JS file.
+			if ($template) {
+				$specific[] = basename(preg_replace('/\.php$/i', '', $template));
+			}
+
+			// Look for type-slug JS file.
+			if (is_singular()) {
+				global $post;
+				$specific[] = "{$post->post_type}-{$post->post_name}";
+			}
+
+			if (count($specific)) {
+				// What cache-breaking version should we use?
+				$version = defined('BBG_THEME_ASSET_VERSION') ? BBG_THEME_ASSET_VERSION : static::ASSET_VERSION;
+
+				// Enqueue whatever specific files exist, if any. We'll
+				// assume these are Vue dependencies.
+				foreach ($specific as $v) {
+					if (file_exists(BBG_THEME_PATH . "dist/css/$v.css")) {
+						$slug = md5($v) . '-css';
+
+						wp_register_style(
+							$slug,
+							BBG_THEME_URL . "dist/css/$v.css",
+							array(),
+							$version
+						);
+						wp_enqueue_style($slug);
+					}
+				}
+			}
+		}
 	}
 
 	// ----------------------------------------------------------------- end header
