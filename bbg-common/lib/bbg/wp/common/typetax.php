@@ -21,16 +21,24 @@ class typetax extends \bbg\wp\common\base\hook {
 	);
 
 
-/**
- * Register Default Custom Taxonomies
- *
- * For each custom post type, we want to register some
- * taxonomies by default. Anything beyond this would be
- * registered in the theme itself.
- *
- * @return void Nothing.
- */
+	/**
+	 * Register Default Custom Taxonomies
+	 *
+	 * For each custom post type, we want to register some
+	 * taxonomies by default. Anything beyond this would be
+	 * registered in the theme itself.
+	 *
+	 * @return void Nothing.
+	 */
 	public static function taxonomies() {
+		// This behavior is not helpful on all sites.
+		if (
+			defined('BBG_COMMON_DISABLE_TAXONOMIES') &&
+			BBG_COMMON_DISABLE_TAXONOMIES
+		) {
+			return;
+		}
+
 		$args = array(
 			'public'=>true,
 			'_builtin'=>false,
