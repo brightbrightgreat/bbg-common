@@ -27,7 +27,7 @@ class utility {
 		'link_subject'=>'',
 		'link_external'=>'',
 		'link_download'=>'',
-		'item_classes'=>'',
+		'item_classes'=>array(),
 	);
 
 	/**
@@ -50,12 +50,16 @@ class utility {
 			'type'=>$link['link_type'],
 			'text'=>$link['link_text'],
 			'classes'=>$link['item_classes'],
-			'url'=>get_permalink($link['link_internal'][0]['id']),
+			'url'=>'',
 			'target'=>'_self',
 			'download'=>false,
 		);
 
 		switch ($link['link_type']) {
+			case 'email':
+				$link_clean['url'] = get_permalink($link['link_internal'][0]['id']);
+				break;
+
 			case 'email':
 				$link_clean['url'] = 'mailto:' . $link['link_email'] . ($link['link_subject'] ? '?subject=' . urlencode($link['link_subject']) : '');
 				$link_clean['classes'][] = 'js_social-share';
