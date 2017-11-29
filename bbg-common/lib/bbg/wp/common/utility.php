@@ -56,7 +56,7 @@ class utility {
 		);
 
 		switch ($link['link_type']) {
-			case 'email':
+			case 'internal':
 				$link_clean['url'] = get_permalink($link['link_internal'][0]['id']);
 				break;
 
