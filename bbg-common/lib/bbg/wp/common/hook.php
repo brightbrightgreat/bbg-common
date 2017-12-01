@@ -32,7 +32,7 @@ class hook extends base\hook {
 			'inline_css'=>null,
 		),
 		'after_setup_theme'=>array(
-			'theme_config'=>null,
+			'theme_config'=>array('priority'=>5),
 		),
 	);
 
@@ -40,6 +40,9 @@ class hook extends base\hook {
 	const FILTERS = array(
 		'body_class'=>array(
 			'body_class'=>null,
+		),
+		'jpeg_quality'=>array(
+			'jpeg_quality'=>null,
 		),
 	);
 
@@ -324,24 +327,20 @@ class hook extends base\hook {
 	public static function theme_config() {
 
 		// Disable the admin bar.
-		show_admin_bar( false );
+		show_admin_bar(false);
 
 		// Use modern WP titles.
-		add_theme_support( 'title-tag' );
+		add_theme_support('title-tag');
 
-		// ---------------------------------------------------------------------
-		// Images
-		// ---------------------------------------------------------------------
+		// Enable thumbnails.
 		add_theme_support('post-thumbnails');
-
-		add_filter('jpeg_quality', function($arg) {
-			return 100;
-		});
 
 		// OG image.
 		add_image_size('og-img', 1200, 630, true);
-	}
 
+		// Generic thumbnail for admin pages.
+		add_image_size('1:1-admin', 40, 40, true);
+	}
 
 	/**
 	 * Extend Body Classes
@@ -365,6 +364,21 @@ class hook extends base\hook {
 		$classes[] = (BBG_TESTMODE ? 'mode:test' : 'mode:live');
 
 		return $classes;
+	}
+
+	/**
+	 * JPEG Quality
+	 *
+	 * WordPress sets the JPEG quality too low by default. This runs
+	 * with the default priority, so if a theme needs to it can set its
+	 * own quality level by hooking at a higher priority (11+).
+	 *
+	 * @param int $quality Quality.
+	 * @return int Quality.
+	 */
+	public static function jpeg_quality(int $quality) {
+		$quality = 95;
+		return $quality;
 	}
 
 	// ----------------------------------------------------------------- end config
