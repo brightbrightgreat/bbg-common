@@ -8,7 +8,7 @@
  * @wordpress-plugin
  * Plugin Name: BBG Common
  * Version: 0.5.2
- * Plugin URI: https://github.com/brightbrightgreat/wpskel
+ * Plugin URI: https://github.com/brightbrightgreat/bbg-common
  * Description: Various tools for a happy and effective WordPress theme.
  * Text Domain: bbg-common
  * Domain Path: /languages/
