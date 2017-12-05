@@ -24,7 +24,9 @@ abstract class fields extends base\hook {
 			'fields_init'=>null,
 		),
 		'carbon_fields_register_fields'=>array(
-			'register_fields'=>null,
+			'tracking'=>null,
+			'mailchimp'=>null,
+			'og_meta'=>null,
 		),
 	);
 
@@ -43,19 +45,16 @@ abstract class fields extends base\hook {
 
 
 	/**
-	 * Register fields
+	 * OG Meta (individual content)
 	 *
 	 * @return void Nothing.
 	 */
-	public static function register_fields() {
-		// ---------------------------------------------------------------------
-		// Open Graph Fields
-		// ---------------------------------------------------------------------
-		// Set up container.
-		Container::make( 'post_meta', 'og', 'Social Sharing - Open Graph Settings' )
+	public static function og_meta() {
+		Container::make('post_meta', 'og', 'Social Sharing - Open Graph Settings')
 
 		// Display location.
-		->where('post_type', 'IN', array('page', 'post'))
+		->where('post_type', 'IN', apply_filters('cf_og_meta_post_types', array('page', 'post')))
+		->where('post_id', 'NOT IN', apply_filters('cf_og_meta_exclude', array(0)))
 
 		// Set up fields.
 		->add_fields(array(
@@ -73,6 +72,55 @@ abstract class fields extends base\hook {
 
 			Field::make('image', 'og_image', 'Image'),
 		));
+	}
+
+
+	/**
+	 * Tracking Code
+	 *
+	 * @return void Nothing.
+	 */
+	public static function tracking() {
+		Container::make('theme_options', 'Analytics & Tracking')
+		->set_page_file('site-tracking')
+		->set_icon('dashicons-chart-bar')
+		->add_tab(
+			'Google Tag Manager',
+			array(
+				Field::make('text', 'gtm', 'ID')
+				->set_attribute('placeholder', 'GTM-#######'),
+			)
+		);
+	}
+
+
+	/**
+	 * MailChimp
+	 *
+	 * @return void Nothing.
+	 */
+	public static function mailchimp() {
+		Container::make('theme_options', 'MailChimp')
+		->set_page_file('site-mailchimp')
+		->set_icon('dashicons-email-alt')
+		->add_tab(
+			'MailChimp',
+			array(
+				Field::make('text', 'mailchimp_api_key', 'API Key'),
+
+				Field::make('text', 'mailchimp_list_id', 'List ID')
+				->set_help_text('This is the default mailing list.'),
+
+				Field::make('rich_text', 'mailchimp_subscribed', 'Subscribe Message')
+				->set_help_text('This text will be shown when a user joins the list.'),
+
+				Field::make('rich_text', 'mailchimp_pending', 'Pending Message')
+				->set_help_text('This text will be shown when a user joins the list but has not yet completed the double opt-in.'),
+
+				Field::make('rich_text', 'mailchimp_unsubscribed', 'Unsubscribe Message')
+				->set_help_text('This text will be shown when a user leaves the list.'),
+			)
+		);
 	}
 
 

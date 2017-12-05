@@ -10,11 +10,13 @@
 
 namespace bbg\wp\common;
 
+use \Carbon_Fields\Field;
 use \blobfolio\common\data as data;
 use \blobfolio\common\format as v_format;
 use \blobfolio\common\ref\cast as r_cast;
 use \blobfolio\common\ref\format as r_format;
 use \blobfolio\common\ref\sanitize as r_sanitize;
+
 
 class utility {
 
@@ -27,7 +29,7 @@ class utility {
 		'link_subject'=>'',
 		'link_external'=>'',
 		'link_download'=>'',
-		'item_classes'=>'',
+		'item_classes'=>array(),
 	);
 
 	/**
@@ -50,12 +52,16 @@ class utility {
 			'type'=>$link['link_type'],
 			'text'=>$link['link_text'],
 			'classes'=>$link['item_classes'],
-			'url'=>get_permalink($link['link_internal'][0]['id']),
+			'url'=>'',
 			'target'=>'_self',
 			'download'=>false,
 		);
 
 		switch ($link['link_type']) {
+			case 'internal':
+				$link_clean['url'] = get_permalink($link['link_internal'][0]['id']);
+				break;
+
 			case 'email':
 				$link_clean['url'] = 'mailto:' . $link['link_email'] . ($link['link_subject'] ? '?subject=' . urlencode($link['link_subject']) : '');
 				$link_clean['classes'][] = 'js_social-share';
@@ -87,5 +93,131 @@ class utility {
 	 */
 	public static function get_icon(string $icon, $classes=null) {
 		return svg::get_icon($icon, $classes);
+	}
+
+	/**
+	 * Related Fields
+	 *
+	 * Returns an array of related post field definitions.
+	 *
+	 * @param string $type Post type.
+	 * @param int $max The max amount of posts to return.
+	 * @param string $prefix An optional prefix to add the to field names to avoid conflict.
+	 * @param array $terms Array of terms to filter by. By default, category and tag are used.
+	 * @return array $fields Array of fields.
+	 */
+	public static function related_fields(string $type='post', int $max=3, string $prefix='', array $terms=array()) {
+
+		// Type prefix. If the type is not post, we need a post type prefix.
+		$type_prefix = ('post' !== $type ? $type . '_' : '');
+
+		// Get our terms properly set up. If there are no terms, add category and tag.
+		if (!$terms) {
+			$terms = array(
+				$type_prefix . 'category',
+				($type_prefix ? $type_prefix : 'post_') . 'tag',
+			);
+		}
+
+		// Start getting our options array together. First, add auto.
+		$options = array(
+			'auto'=>'Auto (most recent)',
+		);
+
+		// Now loop through our terms.
+		foreach ($terms as $t) {
+			$options[$t] = 'By ' . ucwords(str_replace('_', ' ', $t));
+		}
+
+		// And finally add in the curated option.
+		$options['custom'] = 'Curated (manually pick which posts will show up).';
+
+		// Start setting up our fields. First, all our related post type options.
+		$fields = array(
+			// Related type.
+			Field::make('radio', $prefix . 'related_type', 'Type')
+			->add_options($options),
+		);
+
+		// Now let's loop through our terms again.
+		foreach ($terms as $t) {
+			$fields[] = Field::make('association', $prefix . 'related_' . $t, ucwords(str_replace('_', ' ', $t)))
+			->set_max(1)
+			->set_types(array(array(
+				'type'=>'term',
+				'taxonomy'=>$t,
+			), ))
+			->set_conditional_logic(array(array(
+				'field'=>$prefix . 'related_type',
+				'value'=>$t,
+			), ));
+		}
+
+		// And now add in the curated option.
+		$fields[] = Field::make('association', $prefix . 'related_custom', 'Curated ' . ucwords($type) . 's')
+			->set_max($max)
+			->set_types(array(array(
+				'type'=>'post',
+				'post_type'=>$type,
+			), ))
+			->set_conditional_logic(array(array(
+				'field'=>$prefix . 'related_type',
+				'value'=>'custom',
+			), ));
+
+		return $fields;
+	}
+
+
+	/**
+	 * Related Fields
+	 *
+	 * Returns an array of related post field definitions.
+	 *
+	 * @param array $args The arguments, as received from carbon fields.
+	 * @param string $type The post type to retrieve.
+	 * @param int $max The max amount of posts to return.
+	 * @param string $prefix The prefix on the field names, if any.
+	 * @return array $fields Array of posts.
+	 */
+	public static function get_related_posts(array $args, string $type='post', int $max=3, string $prefix='') {
+
+		$posts = array();
+		$strip = $prefix . 'related_';
+
+		switch ($args[$prefix . 'related_type']) {
+			case 'auto':
+				$posts = get_posts(array(
+					'post_type'=>$type,
+					'numberposts'=>$max,
+				));
+				break;
+
+			case 'custom':
+				foreach ($args['related_custom'] as $p) {
+					$posts[] = get_post($p['id']);
+				}
+				break;
+
+			default:
+				$term = $args[$prefix . 'related_' . $args[$prefix . 'related_type']];
+				$term = $term[0];
+
+				$options = array(
+					'post_type'=>$type,
+					'numberposts'=>$max,
+					'tax_query'=>array(array(
+						'taxonomy'=>$term['subtype'],
+						'field'=>'term_id',
+						'terms'=>array($term['id']),
+					), ),
+				);
+
+				$posts = get_posts($options);
+
+				break;
+		}
+
+		return $posts;
 	}
 }

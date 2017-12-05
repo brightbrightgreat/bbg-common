@@ -108,7 +108,7 @@ abstract class ajax {
 
 		// Check Nonce?
 		if ($nonce) {
-			if (!isset($data['n']) || !wp_verify_nonce($data['n'], static::NONCE)) {
+			if (!isset($data['n']) || !wp_verify_nonce($data['n'], static::NONCE_SALT)) {
 				$out['errors']['other'] = 'The form had expired. Please try again.';
 				$out['status'] = 400;
 			}

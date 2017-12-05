@@ -20,10 +20,9 @@ use \WP_Error;
 class newsletter {
 
 	// Our connection info.
-	protected static $env = array(
-		'api_key'=>'',
-		'list_id'=>'',
-	);
+	protected static $api_key;
+	protected static $list_id;
+	protected static $mc;
 
 
 
@@ -32,33 +31,40 @@ class newsletter {
 	// -----------------------------------------------------------------
 
 	/**
-	 * Parse/Set Environment
+	 * API Connection
 	 *
-	 * We'll hold onto the API key and list ID between calls to minimize
-	 * the number of arguments subsequent calls have to provide.
+	 * Pull MailChimp settings and start an API connection.
 	 *
-	 * @param array $args Arguments.
-	 * @return void Nothing.
-	 */
-	protected static function set_env($args=null) {
-		$data = data::parse_args($args, static::$env);
-
-		// Allow themes to set this data via filter.
-		$data = apply_filters('bbg_common_newsletter_env', $data);
-
-		// Save it.
-		static::$env = data::parse_args($data, static::$env);
-	}
-
-	/**
-	 * Has Env Credentials?
-	 *
-	 * Make sure we have enough information to contact MailChimp.
-	 *
+	 * @param string $list_id List ID.
 	 * @return bool True/false.
 	 */
-	protected static function has_env() {
-		return static::$env['api_key'] && static::$env['list_id'];
+	protected static function get_mc(string $list_id='') {
+		// Set up the data if it hasn't been done yet.
+		if (is_null(static::$api_key)) {
+			static::$api_key = carbon_get_theme_option('mailchimp_api_key');
+			static::$list_id = carbon_get_theme_option('mailchimp_list_id');
+
+			if (!static::$api_key) {
+				static::$api_key = false;
+			}
+
+			if (!static::$list_id) {
+				static::$list_id = false;
+			}
+
+			try {
+				if (static::$api_key) {
+					static::$mc = new MailChimp(static::$api_key);
+				}
+			} catch (Throwable $e) {
+				static::$mc = false;
+				static::$api_key = false;
+				static::$list_id = false;
+			}
+		}
+
+		// Return the connection if we can, or false.
+		return static::$api_key && ($list_id || static::$list_id);
 	}
 
 	// ----------------------------------------------------------------- end init
@@ -83,23 +89,26 @@ class newsletter {
 		$defaults = array(
 			'merge'=>null,
 			'interests'=>null,
+			'list_id'=>'',
 		);
 		$data = data::parse_args($args, $defaults);
-
-		// Set up environment.
-		static::set_env($args);
-		if (!static::has_env()) {
-			return static::error('The API Key and/or List ID is missing.');
-		}
 
 		// Gotta have an email.
 		if (!$email) {
 			return static::error('A valid email address is required.');
 		}
 
+		// Make sure the API details exist.
+		if (!static::get_mc($data['list_id'])) {
+			return static::error('MailChimp has not been configured.');
+		}
+		// Maybe use the default list.
+		elseif (!$data['list_id']) {
+			$data['list_id'] = static::$list_id;
+		}
+
 		try {
-			$mc = new MailChimp(static::$env['api_key']);
-			$hash = $mc->subscriberHash($email);
+			$hash = static::$mc->subscriberHash($email);
 
 			// We want to force double opt-in for anybody that isn't
 			// already subscribed.
@@ -125,16 +134,18 @@ class newsletter {
 			}
 
 			// Submit it.
-			$response = $mc->put('lists/' . static::$env['list_id'] . "/members/$hash", $options);
+			static::$mc->put("lists/{$data['list_id']}/members/$hash", $options);
 
 			// Get the status one more time.
-			$status = static::get_status($email, $args);
+			$status2 = static::get_status($email, $args);
 
 			// Trigger an action so themes can do something with this
 			// info if desired.
-			do_action('bbg_common_newsletter_status', $email, $status);
+			if ($status2 !== $status) {
+				do_action('mailchimp_list_status', $email, $status2);
+			}
 
-			return $status;
+			return $status2;
 		} catch (Throwable $e) {
 			return static::error($e);
 		}
@@ -149,21 +160,24 @@ class newsletter {
 	 */
 	public static function unsubscribe(string $email, $args=null) {
 		r_sanitize::email($email);
-
-		// Set up environment.
-		static::set_env($args);
-		if (!static::has_env()) {
-			return static::error('The API Key and/or List ID is missing.');
-		}
+		$data = data::parse_args($args, array('list_id'=>''));
 
 		// Gotta have an email.
 		if (!$email) {
 			return static::error('A valid email address is required.');
 		}
 
+		// Make sure the API details exist.
+		if (!static::get_mc($data['list_id'])) {
+			return static::error('MailChimp has not been configured.');
+		}
+		// Maybe use the default list.
+		elseif (!$data['list_id']) {
+			$data['list_id'] = static::$list_id;
+		}
+
 		try {
-			$mc = new MailChimp(static::$env['api_key']);
-			$hash = $mc->subscriberHash($email);
+			$hash = static::$mc->subscriberHash($email);
 
 			$options = array(
 				'email_address'=>$data['email'],
@@ -171,14 +185,14 @@ class newsletter {
 			);
 
 			// Submit it.
-			$response = $mc->put('lists/' . static::$env['list_id'] . "/members/$hash", $options);
+			static::$mc->put("lists/{$data['list_id']}/members/$hash", $options);
 
 			// Get the status one more time.
 			$status = static::get_status($email, $args);
 
 			// Trigger an action so themes can do something with this
 			// info if desired.
-			do_action('bbg_common_newsletter_status', $email, $status);
+			do_action('mailchimp_list_status', $email, $status);
 
 			return $status;
 		} catch (Throwable $e) {
@@ -195,23 +209,26 @@ class newsletter {
 	 */
 	public static function get_status(string $email, $args=null) {
 		r_sanitize::email($email);
-
-		// Set up environment.
-		static::set_env($args);
-		if (!static::has_env()) {
-			return static::error('The API Key and/or List ID is missing.');
-		}
+		$data = data::parse_args($args, array('list_id'=>''));
 
 		// Gotta have an email.
 		if (!$email) {
 			return static::error('A valid email address is required.');
 		}
 
-		try {
-			$mc = new MailChimp(static::$env['api_key']);
-			$hash = $mc->subscriberHash($email);
+		// Make sure the API details exist.
+		if (!static::get_mc($data['list_id'])) {
+			return static::error('MailChimp has not been configured.');
+		}
+		// Maybe use the default list.
+		elseif (!$data['list_id']) {
+			$data['list_id'] = static::$list_id;
+		}
 
-			$status = $mc->get('lists/' . static::$env['list_id'] . "/members/$hash");
+		try {
+			$hash = static::$mc->subscriberHash($email);
+
+			$status = static::$mc->get("lists/{$data['list_id']}/members/$hash");
 			if (isset($status['email_address'], $status['status'])) {
 				// Subscribed.
 				if ('subscribed' === $status['status']) {
@@ -228,7 +245,7 @@ class newsletter {
 				return 'pending';
 			}
 			else {
-				return static::error('The status could not be determined.');
+				return 'unsubscribed';
 			}
 		} catch (Throwable $e) {
 			return static::error($e);

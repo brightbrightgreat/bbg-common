@@ -126,6 +126,7 @@ spl_autoload_register(
                 'DrewM\\MailChimp\\Webhook' => '/vendor/drewm/mailchimp-api/src/Webhook.php',
                 'bbg\\wp\\common\\ajax' => '/bbg/wp/common/ajax.php',
                 'bbg\\wp\\common\\base\\ajax' => '/bbg/wp/common/base/ajax.php',
+                'bbg\\wp\\common\\base\\blobject' => '/bbg/wp/common/base/blobject.php',
                 'bbg\\wp\\common\\base\\hook' => '/bbg/wp/common/base/hook.php',
                 'bbg\\wp\\common\\base\\partial' => '/bbg/wp/common/base/partial.php',
                 'bbg\\wp\\common\\fields' => '/bbg/wp/common/fields.php',

@@ -19,16 +19,20 @@ class hook extends base\hook {
 	// Actions: hook=>[callbacks].
 	const ACTIONS = array(
 		'wp_enqueue_scripts'=>array(
-			'scripts'=>null,
+			'scripts'=>array('priority'=>100),
+			'styles'=>array('priority'=>100),
 		),
 		'wp_footer'=>array(
+			'gtm_fallback'=>null,
 			'js_env'=>array('priority'=>0),
 		),
 		'wp_head'=>array(
+			'gtm'=>array('priority'=>550),
+			'gtm_data'=>array('priority'=>500),
 			'inline_css'=>null,
 		),
 		'after_setup_theme'=>array(
-			'theme_config'=>null,
+			'theme_config'=>array('priority'=>5),
 		),
 	);
 
@@ -37,7 +41,13 @@ class hook extends base\hook {
 		'body_class'=>array(
 			'body_class'=>null,
 		),
+		'jpeg_quality'=>array(
+			'jpeg_quality'=>null,
+		),
 	);
+
+	protected static $gtm;
+	protected static $vue_deps = array();
 
 
 
@@ -79,12 +89,33 @@ class hook extends base\hook {
 		ob_start();
 		?>
 		<style>
-			[v-cloak] { display: none; }
+			[v-cloak],
+			[hidden] { display: none; }
+
+			.fade-enter-active,
+			.fade-leave-active { transition: opacity .5s; }
+			.fade-enter,
+			.fade-leave-to { opacity: 0; }
 		</style>
 		<?php
 		$out = ob_get_clean();
 		r_sanitize::whitespace($out);
 		echo "\n$out\n";
+	}
+
+	/**
+	 * Add Vue Dependency
+	 *
+	 * For Vue in particular, there might be dependencies in the plugin
+	 * and theme. Since the plugin handles the actual enqueing of Vue,
+	 * this method can be used by themes to make sure their deps are
+	 * properly registered.
+	 *
+	 * @param string $uri URI.
+	 * @return void Nothing.
+	 */
+	public static function add_vue_dep(string $uri) {
+		static::$vue_deps[] = $uri;
 	}
 
 	/**
@@ -96,7 +127,6 @@ class hook extends base\hook {
 		global $post;
 
 		$js_url = BBGCOMMON_PLUGIN_URL . 'js/';
-		$vue_deps = array();
 
 		// Global plugins.
 		wp_register_script(
@@ -109,14 +139,16 @@ class hook extends base\hook {
 		wp_enqueue_script('bbg-common-plugins-js');
 
 		// Our main Vue bundle.
+		$vue = BBG_TESTMODE ? "{$js_url}vue-testmode.min.js" : "{$js_url}vue.min.js";
 		wp_register_script(
 			'bbg-common-vue-deps-js',
-			"{$js_url}vue.min.js",
+			$vue,
 			array(),
 			static::ASSET_VERSION,
 			true
 		);
-		$vue_deps[] = 'bbg-common-vue-deps-js';
+		// Bump this one thing to the top of the list.
+		array_unshift(static::$vue_deps, 'bbg-common-vue-deps-js');
 
 		// A phone number format helper. This conditionally enqueued
 		// because of its size. To turn it on, define the USE_PHONE_JS
@@ -129,7 +161,45 @@ class hook extends base\hook {
 			true
 		);
 		if (defined('USE_PHONE_JS') && USE_PHONE_JS) {
-			$vue_deps[] = 'blob-phone-js';
+			static::$vue_deps[] = 'blob-phone-js';
+		}
+
+		// Let's look for theme assets based on the current page.
+		if (defined('BBG_THEME_URL') && defined('BBG_THEME_PATH')) {
+			global $template;
+			$specific = array();
+
+			// Look for a template-specific JS file.
+			if ($template) {
+				$specific[] = basename(preg_replace('/\.php$/i', '', $template));
+			}
+
+			// Look for type-slug JS file.
+			if (is_singular()) {
+				global $post;
+				$specific[] = "{$post->post_type}-{$post->post_name}";
+			}
+
+			if (count($specific)) {
+				// What cache-breaking version should we use?
+				$version = defined('BBG_THEME_ASSET_VERSION') ? BBG_THEME_ASSET_VERSION : static::ASSET_VERSION;
+
+				// Enqueue whatever specific files exist, if any. We'll
+				// assume these are Vue dependencies.
+				foreach ($specific as $v) {
+					if (file_exists(BBG_THEME_PATH . "dist/js/$v.min.js")) {
+						$slug = md5($v) . '-js';
+						wp_register_script(
+							$slug,
+							BBG_THEME_URL . "dist/js/$v.min.js",
+							array('bbg-common-vue-deps-js'),
+							$version,
+							true
+						);
+						static::$vue_deps[] = $slug;
+					}
+				}
+			}
 		}
 
 		// Our main Vue file. This is enqueued last, and depends on all
@@ -138,11 +208,56 @@ class hook extends base\hook {
 		wp_register_script(
 			'bbg-common-vue-js',
 			"{$js_url}vue-core.min.js",
-			apply_filters('bbg_common_vue_deps', $vue_deps),
+			static::$vue_deps,
 			static::ASSET_VERSION,
 			true
 		);
 		wp_enqueue_script('bbg-common-vue-js');
+	}
+
+	/**
+	 * Enqueue Styles
+	 *
+	 * @return void Nothing.
+	 */
+	public static function styles() {
+		// Look for theme assets based on the loaded page.
+		if (defined('BBG_THEME_URL') && defined('BBG_THEME_PATH')) {
+			global $template;
+			$specific = array();
+
+			// Look for a template-specific JS file.
+			if ($template) {
+				$specific[] = basename(preg_replace('/\.php$/i', '', $template));
+			}
+
+			// Look for type-slug JS file.
+			if (is_singular()) {
+				global $post;
+				$specific[] = "{$post->post_type}-{$post->post_name}";
+			}
+
+			if (count($specific)) {
+				// What cache-breaking version should we use?
+				$version = defined('BBG_THEME_ASSET_VERSION') ? BBG_THEME_ASSET_VERSION : static::ASSET_VERSION;
+
+				// Enqueue whatever specific files exist, if any. We'll
+				// assume these are Vue dependencies.
+				foreach ($specific as $v) {
+					if (file_exists(BBG_THEME_PATH . "dist/css/$v.css")) {
+						$slug = md5($v) . '-css';
+
+						wp_register_style(
+							$slug,
+							BBG_THEME_URL . "dist/css/$v.css",
+							array(),
+							$version
+						);
+						wp_enqueue_style($slug);
+					}
+				}
+			}
+		}
 	}
 
 	// ----------------------------------------------------------------- end header
@@ -212,24 +327,20 @@ class hook extends base\hook {
 	public static function theme_config() {
 
 		// Disable the admin bar.
-		show_admin_bar( false );
+		show_admin_bar(false);
 
 		// Use modern WP titles.
-		add_theme_support( 'title-tag' );
+		add_theme_support('title-tag');
 
-		// ---------------------------------------------------------------------
-		// Images
-		// ---------------------------------------------------------------------
+		// Enable thumbnails.
 		add_theme_support('post-thumbnails');
-
-		add_filter('jpeg_quality', function($arg) {
-			return 100;
-		});
 
 		// OG image.
 		add_image_size('og-img', 1200, 630, true);
-	}
 
+		// Generic thumbnail for admin pages.
+		add_image_size('1:1-admin', 40, 40, true);
+	}
 
 	/**
 	 * Extend Body Classes
@@ -255,5 +366,149 @@ class hook extends base\hook {
 		return $classes;
 	}
 
+	/**
+	 * JPEG Quality
+	 *
+	 * WordPress sets the JPEG quality too low by default. This runs
+	 * with the default priority, so if a theme needs to it can set its
+	 * own quality level by hooking at a higher priority (11+).
+	 *
+	 * @param int $quality Quality.
+	 * @return int Quality.
+	 */
+	public static function jpeg_quality(int $quality) {
+		$quality = 95;
+		return $quality;
+	}
+
 	// ----------------------------------------------------------------- end config
+
+
+
+	// -----------------------------------------------------------------
+	// Google Tag Manager
+	// -----------------------------------------------------------------
+
+	/**
+	 * Has GTM?
+	 *
+	 * GTM code is only relevant if the site uses it. We should also
+	 * disable it for WP users and testing sites.
+	 *
+	 * @return string|bool Code or false.
+	 */
+	protected static function get_gtm() {
+		if (is_null(static::$gtm)) {
+			static::$gtm = carbon_get_theme_option('gtm');
+			if (!static::$gtm) {
+				static::$gtm = false;
+			}
+		}
+
+		if (
+			static::$gtm &&
+			!is_user_loged_in() &&
+			!BBG_TESTMODE
+		) {
+			return static::$gtm;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Main GTM Tracking
+	 *
+	 * @return void Nothing.
+	 */
+	public static function gtm() {
+		// Not applicable?
+		if (false === ($gtm = static::get_gtm())) {
+			return;
+		}
+		?>
+		<!-- Google Tag Manager -->
+		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer','<?=$gtm?>');</script>
+		<!-- End Google Tag Manager -->
+		<?php
+	}
+
+	/**
+	 * GTM DataLayer
+	 *
+	 * This populates various information about the request, and can be
+	 * extended by themes to provide more/different data.
+	 *
+	 * @return void Nothing.
+	 */
+	public static function gtm_data() {
+		// Not applicable?
+		if (false === ($gtm = static::get_gtm())) {
+			return;
+		}
+
+		global $template;
+
+		$out = array(
+			'pageSlug'=>'',
+			'pageType'=>'other',
+			'pageTemplate'=>$template ? basename($template) : '',
+			'pageId'=>0,
+		);
+
+		// Single page.
+		if (is_singular()) {
+			global $post;
+			$out['pageSlug'] = $post->post_name;
+			$out['pageId'] = $post->ID;
+			$out['pageType'] = $post->post_type;
+		}
+		// Archive.
+		elseif (is_archive()) {
+			$out['pageType'] = 'archive';
+		}
+		// Nothing.
+		elseif (is_404()) {
+			$out['pageType'] = '404';
+		}
+
+		// Let themes modify this data.
+		$data = array($out);
+		$data = apply_filters('bbg_common_gtm_datalayer', $data);
+
+		if (is_array($data) && count($data)) {
+			r_sanitize::utf8($data);
+
+			echo '<!-- gtm data --><script>var dataLayer = dataLayer || [];';
+			foreach ($data as $v) {
+				if (is_array($v) && count($v)) {
+					echo "\ndataLayer.push(" . json_encode($v) . ');';
+				}
+			}
+			echo '</script>';
+		}
+	}
+
+	/**
+	 * Fallback GTM Code
+	 *
+	 * @return void Nothing.
+	 */
+	public static function gtm_fallback() {
+		// Not applicable?
+		if (false === ($gtm = static::get_gtm())) {
+			return;
+		}
+		?>
+		<!-- Google Tag Manager (noscript) -->
+		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MVF523C" height="0" width="0" style="display:none; visibility:hidden"></iframe></noscript>
+		<!-- End Google Tag Manager (noscript) -->
+		<?php
+	}
+
+	// ----------------------------------------------------------------- end gtm
 }
