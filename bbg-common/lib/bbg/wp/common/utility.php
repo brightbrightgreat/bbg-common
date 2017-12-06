@@ -59,7 +59,13 @@ class utility {
 
 		switch ($link['link_type']) {
 			case 'internal':
-				$link_clean['url'] = get_permalink($link['link_internal'][0]['id']);
+				#todo make links better.
+				if (is_array($link['link_internal'])) {
+					$l = $link['link_internal'][0];
+					$l['url'] =  ('category' === $l['subtype'] ? get_category_link($l['id']) : get_term_link($l['id'], $l['subtype']));
+					$link_clean['url'] = ( 'term' === $l['type'] ? $l['url'] : get_permalink($l['id']) );
+				}
+
 				break;
 
 			case 'email':
