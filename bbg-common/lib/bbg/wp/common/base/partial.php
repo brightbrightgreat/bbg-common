@@ -11,17 +11,21 @@
 
 namespace bbg\wp\common\base;
 
+use \blobfolio\common\cast as v_cast;
 use \blobfolio\common\data;
 use \blobfolio\common\ref\cast as r_cast;
 use \blobfolio\common\ref\format as r_format;
+use \blobfolio\common\ref\sanitize as r_sanitize;
 
 abstract class partial extends hook {
 
 	// The basic $args data structure.
 	const TEMPLATE = array();
 
-	// The key in $args containing wrapper classes.
+	// Some arguments are used to building the wrapper.
 	const WRAPPER_CLASSES_KEY = 'section_classes';
+	const WRAPPER_ATTS_KEY = 'section_atts';
+	const WRAPPER_TAG_KEY = 'section_tag';
 
 	// Default wrapper classes.
 	const WRAPPER_CLASSES = array();
@@ -114,7 +118,16 @@ abstract class partial extends hook {
 	 */
 	protected static function build(&$args=null) {
 		$id = static::random_id();
+
+		// Find classes.
 		$classes = isset($args[static::WRAPPER_CLASSES_KEY]) ? $args[static::WRAPPER_CLASSES_KEY] : null;
+
+		$atts = isset($args[static::WRAPPER_ATTS_KEY]) && is_array($args[static::WRAPPER_ATTS_KEY]) ? $args[static::WRAPPER_ATTS_KEY] : array();
+		if (!is_null($classes)) {
+			$atts['class'] = $classes;
+		}
+
+		$tag = isset($args[static::WRAPPER_TAG_KEY]) ? $args[static::WRAPPER_TAG_KEY] : 'section';
 
 		// Our content nugget.
 		$str = '';
@@ -126,7 +139,7 @@ abstract class partial extends hook {
 		static::save_env($id, $args);
 
 		// Wrap it like a burrito.
-		static::build_wrapper($str, $id, $classes);
+		static::build_wrapper($str, $id, $atts, $tag);
 
 		// And done!
 		return $str;
@@ -155,39 +168,74 @@ abstract class partial extends hook {
 	 *
 	 * @param string $str Content.
 	 * @param string $id ID.
-	 * @param array $classes Classes.
+	 * @param array $atts Attributes.
+	 * @param string $tag Tag type.
 	 * @return bool True.
 	 */
-	protected static function build_wrapper(string &$str, string $id, $classes=null) {
-		// Set up classes.
-		r_format::list_to_array($classes, ' ');
-		$classes = array_filter($classes);
-		if (!count($classes)) {
-			$classes = static::WRAPPER_CLASSES;
+	protected static function build_wrapper(string &$str, string $id, $atts=null, string $tag='section') {
+
+		if (is_string($atts)) {
+			r_format::list_to_array($atts, ' ');
+		}
+		else {
+			r_cast::array($atts);
 		}
 
-		// Replace these with...
-		$from = array(
-			'%CLASSES%',
-			'%ID%',
-			'%CONTENT%',
-			'id=""',
-		);
+		// The attributes are expected to be an associative array, where
+		// keys are attributes, and values are attribute values. However
+		// for historical reasons, this might be a numerically indexed
+		// array of classes.
+		if (count($atts) && ('associative' !== v_cast::array_type($atts))) {
+			$atts = array('class'=>$atts);
+		}
 
-		// These...
-		$to = array(
-			esc_attr(implode(' ', $classes)),
-			$id,
-			$str,
-			'',
-		);
+		// Classes need some special handling.
+		if (!isset($atts['class'])) {
+			$atts['class'] = array();
+		}
+		else {
+			r_cast::array($atts['class']);
+			$atts['class'] = array_filter($atts['class']);
+		}
+		if (!count($atts['class'])) {
+			$atts['class'] = static::WRAPPER_CLASSES;
+		}
 
-		$str = str_replace(
-			$from,
-			$to,
-			'<section id="%ID%" class="%CLASSES%">%CONTENT%</section>'
-		);
+		// Make sure all attributes have nice string values.
+		foreach ($atts as $k=>$v) {
+			// Invalid attribute.
+			if (!preg_match('/^[a-z][a-z0-9:_\.\-]+$/i', $k)) {
+				unset($atts[$k]);
+				continue;
+			}
 
+			if (is_array($atts[$k])) {
+				$atts[$k] = implode(' ', $atts[$k]);
+			}
+
+			r_cast::string($atts[$k], true);
+			r_sanitize::whitespace($atts[$k]);
+		}
+
+		// Sanitize the tag.
+		if (!$tag) {
+			$tag = 'section';
+		}
+		else {
+			$tag = strtolower($tag);
+		}
+
+		// And build it!
+		$out = "<$tag";
+		if ($id) {
+			$out .= ' id="' . esc_attr($id) . '"';
+		}
+		foreach ($atts as $k=>$v) {
+			$out .= ' ' . $k . '="' . esc_attr($v) . '"';
+		}
+		$out .= ">$str</$tag>";
+
+		$str = $out;
 		return true;
 	}
 
