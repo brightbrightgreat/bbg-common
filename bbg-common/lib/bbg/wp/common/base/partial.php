@@ -231,7 +231,7 @@ abstract class partial extends hook {
 			$out .= ' id="' . esc_attr($id) . '"';
 		}
 		foreach ($atts as $k=>$v) {
-			$out .= ' ' . $k . '="' . esc_attr($v) . '"';
+			$out .= ' ' . $k . '="' . str_replace('"', '&quot;', ($v)) . '"';
 		}
 		$out .= ">$str</$tag>";
 
