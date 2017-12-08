@@ -59,12 +59,13 @@ abstract class partial extends hook {
 	 * @return string Partial.
 	 */
 	public static function get($args=null) {
+		$id = static::random_id();
 		// Start by sanitizing the arguments. If this fails, we're done.
 		if (false === ($args = static::sanitize_arguments($args))) {
 			return '';
 		}
 
-		return static::build($args);
+		return static::build($id, $args);
 	}
 
 	/**
@@ -76,12 +77,13 @@ abstract class partial extends hook {
 	 * @return void Nothing.
 	 */
 	public static function print($args=null) {
+		$id = static::random_id();
 		// Start by sanitizing the arguments. If this fails, we're done.
 		if (false === ($args = static::sanitize_arguments($args))) {
 			return;
 		}
 
-		echo static::build($args);
+		echo static::build($id, $args);
 	}
 
 	// ----------------------------------------------------------------- end user methods
@@ -113,11 +115,11 @@ abstract class partial extends hook {
 	 * This is a meta function that generates an ID, builds content, and
 	 * wraps it all up with a bow.
 	 *
+	 * @param string $id The id of the given partial.
 	 * @param mixed $args Arguments.
 	 * @return string Partial.
 	 */
-	protected static function build(&$args=null) {
-		$id = static::random_id();
+	protected static function build(string $id, &$args=null) {
 
 		// Find classes.
 		$classes = isset($args[static::WRAPPER_CLASSES_KEY]) ? $args[static::WRAPPER_CLASSES_KEY] : null;
