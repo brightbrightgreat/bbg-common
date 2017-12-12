@@ -62,8 +62,31 @@ class utility {
 				#todo make links better.
 				if (is_array($link['link_internal'])) {
 					$l = $link['link_internal'][0];
-					$l['url'] =  ('category' === $l['subtype'] ? get_category_link($l['id']) : get_term_link($l['id'], $l['subtype']));
-					$link_clean['url'] = ( 'term' === $l['type'] ? $l['url'] : get_permalink($l['id']) );
+
+					// if this is a term
+					if('term' === $l['type']) {
+						switch ($l['subtype']) {
+
+							// category
+							case 'category':
+								$link_clean['url'] = get_category_link($l['id']);
+								break;
+
+							// post tag
+							case 'post_tag':
+								$link_clean['url'] = get_tag_link($l['id']);
+								break;
+
+							// custom taxonomies
+							default:
+								$link_clean['url'] = get_term_link($l['id'], $l['subtype']);
+								break;
+						}
+					}
+
+					else {
+						$link_clean['url'] = get_permalink($l['id']);
+					}
 				}
 
 				break;
