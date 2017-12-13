@@ -143,7 +143,7 @@ class hook extends base\hook {
 		wp_register_script(
 			'bbg-common-vue-deps-js',
 			$vue,
-			array(),
+			array('bbg-common-plugins-js'),
 			static::ASSET_VERSION,
 			true
 		);
