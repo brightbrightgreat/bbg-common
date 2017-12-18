@@ -44,6 +44,9 @@ class hook extends base\hook {
 		'jpeg_quality'=>array(
 			'jpeg_quality'=>null,
 		),
+		'bbg_common_js_env'=>array(
+			'archive_env'=>array('priority'=>5),
+		),
 	);
 
 	protected static $gtm;
@@ -70,6 +73,14 @@ class hook extends base\hook {
 		) {
 			add_action('wp_head', 'wp_no_robots');
 		}
+
+		// Stop WP from encoding regular characters to HTML entities.
+		remove_filter('single_cat_title', 'wptexturize');
+		remove_filter('single_post_title', 'wptexturize');
+		remove_filter('single_tag_title', 'wptexturize');
+		remove_filter('term_name', 'wptexturize');
+		remove_filter('the_excerpt', 'wptexturize');
+		remove_filter('the_title', 'wptexturize');
 	}
 
 
@@ -143,7 +154,7 @@ class hook extends base\hook {
 		wp_register_script(
 			'bbg-common-vue-deps-js',
 			$vue,
-			array(),
+			array('bbg-common-plugins-js'),
 			static::ASSET_VERSION,
 			true
 		);
@@ -309,7 +320,7 @@ class hook extends base\hook {
 
 		// Fix UTF-8 and print.
 		r_sanitize::utf8($data);
-		echo "\n<script>var bbgEnv=" . json_encode($data) . ";</script>\n";
+		echo "\n" . '<script id="bbg-common-env">var bbgEnv=' . json_encode($data) . ";</script>\n";
 	}
 
 	// ----------------------------------------------------------------- end footer
@@ -511,4 +522,61 @@ class hook extends base\hook {
 	}
 
 	// ----------------------------------------------------------------- end gtm
+
+
+
+	// -----------------------------------------------------------------
+	// Infinite Scroll
+	// -----------------------------------------------------------------
+
+	/**
+	 * Push Archive Info to Vue
+	 *
+	 * @param array $data Data.
+	 * @return array Data.
+	 */
+	public static function archive_env($data) {
+		global $post;
+		global $wp_query;
+		$big = 999999;
+
+		// The default.
+		$data['archive'] = array(
+			'base'=>'',
+			'marker'=>'infinite-marker',
+			'offset'=>100,
+			'page'=>1,
+			'pages'=>1,
+			'posts'=>array(),
+		);
+
+		// Dig deeper if we're on an archive.
+		if (is_archive()) {
+			$data['archive']['page'] = max(1, get_query_var('paged'));
+			$data['archive']['pages'] = $wp_query->max_num_pages;
+			$data['archive']['base'] = str_replace($big, '%#%', esc_url(get_pagenum_link($big)));
+
+			// Make sure the query counter is zeroed.
+			wp_reset_query();
+
+			// Add very basic post data. Themes can go back and change
+			// augment later.
+			if (have_posts()) {
+				while (have_posts()) {
+					the_post();
+
+					// Convert WP_Post to array.
+					$data['archive']['posts'][] = (array) $post;
+				}
+			}
+
+			// Re-zero query.
+			wp_reset_query();
+		}
+
+		// And we're done.
+		return $data;
+	}
+
+	// ----------------------------------------------------------------- end infinite
 }

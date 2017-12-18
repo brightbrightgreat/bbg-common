@@ -33,6 +33,37 @@ var app = new Vue({
 					vue.heartbeat(vue);
 				}, 1800000);
 			}
+
+			// Infinite Scroll?
+			if (
+				(typeof this.archive !== 'undefined') &&
+				(this.archive.pages > this.archive.page) &&
+				this.archive.marker &&
+				(typeof this.archive.marker === 'string') &&
+				(typeof this.archive.base === 'string') &&
+				(this.archive.base.indexOf('%#%') !== -1)
+			) {
+				// Find the marker.
+				var archiveObserverEl = document.getElementById(this.archive.marker);
+				if (archiveObserverEl) {
+					// Make sure the offset is a number.
+					this.archive.offset = parseInt(this.archive.offset, 10) || 0;
+
+					var archiveObserver = new IntersectionObserver(function(entries, archiveObserver) {
+						// Pull more data.
+						if (entries[0].isIntersecting) {
+							vue.infiniteScroll();
+						}
+
+						// Stop watching if we're done.
+						if (vue.infiniteDone === true) {
+							archiveObserver.unobserve(archiveObserverEl);
+							archiveObserverEl.parentNode.removeChild(archiveObserverEl);
+						}
+					}, { root: null, rootMargin: this.archive.offset + 'px', threshold: 1 });
+					archiveObserver.observe(archiveObserverEl);
+				}
+			}
 		},
 
 		// Runs when the window has been resized. This is throttled for
@@ -52,6 +83,98 @@ var app = new Vue({
 
 			this.onScroll();
 		}, 100),
+
+		/**
+		 * Infinite Scroll
+		 *
+		 * Archive landings just pull results from subsequent pages as
+		 * users near the end of the current list.
+		 *
+		 * @return void Nothing.
+		 */
+		infiniteLock: false,
+		infiniteDone: false,
+		infiniteScroll: function(){
+			// Don't need to run.
+			if((true === this.infiniteLock) || !this.archive) {
+				// This flag will kill the associated observer.
+				if (!this.archive) {
+					this.infiniteDone = true;
+				}
+				return false;
+			}
+			this.infiniteLock = true;
+
+			// Make sure our current posts list makes sense.
+			if(!this.archive.posts || !Array.isArray(this.archive.posts)){
+				this.archive.posts = [];
+			}
+
+			// Increase the page.
+			this.archive.page++;
+
+			// We're done.
+			if(this.archive.page > this.archive.pages){
+				this.infiniteDone = true;
+				return false;
+			}
+
+			var url = this.archive.base.replace('%#%', this.archive.page),
+				vue = this;
+
+			// Pull it via AJAX.
+			this.$http.get(url).then(
+				function(r){
+					if(r.ok){
+						try {
+							// First put the contents somewhere.
+							var el = document.createElement('html');
+							el.innerHTML = r.body;
+
+							// Parse it to see if we have our blobEnv var.
+							var script = el.getElementById('bbg-common-env').textContent,
+								first = script.indexOf('bbgEnv={'),
+								last = script.lastIndexOf('}'),
+								i;
+
+							// If we have positions, we probably have data.
+							if ((first !== -1) && (last !== -1)) {
+								var json = JSON.parse(script.substr(first + 6, last - first - 6));
+
+								// Add whatever posts.
+								if (
+									json.archive &&
+									json.archive.posts &&
+									Array.isArray(json.archive.posts)
+								) {
+									for(i=0; i<json.archive.posts.length; i++){
+										vue.archive.posts.push(json.archive.posts[i]);
+									}
+									vue.infiniteLock = false;
+									return true;
+								}
+							}
+
+							// If we're here, we got nothing and are done.
+							vue.infiniteLock = false;
+							vue.infiniteDone = true;
+							return false;
+						} catch(Ex) {}
+					}
+					// If there was an error, just assume we're done.
+					else {
+						vue.infiniteLock = false;
+						vue.infiniteDone = true;
+						return false;
+					}
+				},
+				// Again, treat errors like being done.
+				function(r){
+					vue.infiniteLock = false;
+					vue.infiniteDone = true;
+				}
+			);
+		},
 
 	}, // Methods.
 
