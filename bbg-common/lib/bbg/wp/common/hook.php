@@ -559,6 +559,23 @@ class hook extends base\hook {
 			// Make sure the query counter is zeroed.
 			wp_reset_query();
 
+			// Post defaults. We don't want to show *everything*.
+			$default = array(
+				'ID'=>0,
+				'comment_count'=>0,
+				'menu_order'=>0,
+				'post_author'=>0,
+				'post_content'=>'',
+				'post_date'=>'0000-00-00 00:00:00',
+				'post_excerpt'=>'',
+				'post_modified'=>'0000-00-00 00:00:00',
+				'post_name'=>'',
+				'post_parent'=>0,
+				'post_status'=>'',
+				'post_title'=>'',
+				'post_type'=>'',
+			);
+
 			// Add very basic post data. Themes can go back and change
 			// augment later.
 			if (have_posts()) {
@@ -566,7 +583,10 @@ class hook extends base\hook {
 					the_post();
 
 					// Convert WP_Post to array.
-					$data['archive']['posts'][] = (array) $post;
+					$tmp = (array) $post;
+
+					// Convert WP_Post to array.
+					$data['archive']['posts'][] = data::parse_args($tmp, $default);
 				}
 			}
 
