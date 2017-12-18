@@ -23,6 +23,7 @@ module.exports = function(grunt) {
 						'src/js/lib/debounce.js',
 						'src/js/lib/fecha.min.js',
 						'src/js/lib/js.cookie.js',
+						'src/js/lib/intersection-observer.js',
 						'src/js/lib/matches.js',
 						'src/js/lib/matchmedia.min.js',
 						'src/js/lib/param.js',

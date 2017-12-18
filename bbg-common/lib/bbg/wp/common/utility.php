@@ -59,25 +59,25 @@ class utility {
 
 		switch ($link['link_type']) {
 			case 'internal':
-				#todo make links better.
+				// TODO make links better.
 				if (is_array($link['link_internal'])) {
 					$l = $link['link_internal'][0];
 
-					// if this is a term
-					if('term' === $l['type']) {
+					// If this is a term.
+					if ('term' === $l['type']) {
 						switch ($l['subtype']) {
 
-							// category
+							// Category.
 							case 'category':
 								$link_clean['url'] = get_category_link($l['id']);
 								break;
 
-							// post tag
+							// Post tag.
 							case 'post_tag':
 								$link_clean['url'] = get_tag_link($l['id']);
 								break;
 
-							// custom taxonomies
+							// Custom taxonomies.
 							default:
 								$link_clean['url'] = get_term_link($l['id'], $l['subtype']);
 								break;
