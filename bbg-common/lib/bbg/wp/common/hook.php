@@ -44,9 +44,6 @@ class hook extends base\hook {
 		'jpeg_quality'=>array(
 			'jpeg_quality'=>null,
 		),
-		'bbg_common_js_env'=>array(
-			'archive_env'=>array('priority'=>5),
-		),
 	);
 
 	protected static $gtm;
@@ -522,81 +519,4 @@ class hook extends base\hook {
 	}
 
 	// ----------------------------------------------------------------- end gtm
-
-
-
-	// -----------------------------------------------------------------
-	// Infinite Scroll
-	// -----------------------------------------------------------------
-
-	/**
-	 * Push Archive Info to Vue
-	 *
-	 * @param array $data Data.
-	 * @return array Data.
-	 */
-	public static function archive_env($data) {
-		global $post;
-		global $wp_query;
-		$big = 999999;
-
-		// The default.
-		$data['archive'] = array(
-			'base'=>'',
-			'marker'=>'infinite-marker',
-			'offset'=>100,
-			'page'=>1,
-			'pages'=>1,
-			'posts'=>array(),
-		);
-
-		// Dig deeper if we're on an archive.
-		if (is_archive()) {
-			$data['archive']['page'] = max(1, get_query_var('paged'));
-			$data['archive']['pages'] = $wp_query->max_num_pages;
-			$data['archive']['base'] = str_replace($big, '%#%', esc_url(get_pagenum_link($big)));
-
-			// Make sure the query counter is zeroed.
-			wp_reset_query();
-
-			// Post defaults. We don't want to show *everything*.
-			$default = array(
-				'ID'=>0,
-				'comment_count'=>0,
-				'menu_order'=>0,
-				'post_author'=>0,
-				'post_content'=>'',
-				'post_date'=>'0000-00-00 00:00:00',
-				'post_excerpt'=>'',
-				'post_modified'=>'0000-00-00 00:00:00',
-				'post_name'=>'',
-				'post_parent'=>0,
-				'post_status'=>'',
-				'post_title'=>'',
-				'post_type'=>'',
-			);
-
-			// Add very basic post data. Themes can go back and change
-			// augment later.
-			if (have_posts()) {
-				while (have_posts()) {
-					the_post();
-
-					// Convert WP_Post to array.
-					$tmp = (array) $post;
-
-					// Convert WP_Post to array.
-					$data['archive']['posts'][] = data::parse_args($tmp, $default);
-				}
-			}
-
-			// Re-zero query.
-			wp_reset_query();
-		}
-
-		// And we're done.
-		return $data;
-	}
-
-	// ----------------------------------------------------------------- end infinite
 }
