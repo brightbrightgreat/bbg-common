@@ -46,6 +46,10 @@ module.exports = function(grunt) {
 						'src/js/custom/vue-methods.js',
 						'src/js/lib/vue-blob-forms.min.js'
 					],
+					// Move blob-phone.
+					'js/blob-phone.min.js': [
+						'src/js/lib/blob-phone.min.js'
+					],
 					// Our main Vue file.
 					'js/vue-core.min.js': [
 						'src/js/custom/vue-core.js'
