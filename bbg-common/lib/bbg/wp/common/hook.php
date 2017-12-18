@@ -70,6 +70,14 @@ class hook extends base\hook {
 		) {
 			add_action('wp_head', 'wp_no_robots');
 		}
+
+		// Stop WP from encoding regular characters to HTML entities.
+		remove_filter('single_cat_title', 'wptexturize');
+		remove_filter('single_post_title', 'wptexturize');
+		remove_filter('single_tag_title', 'wptexturize');
+		remove_filter('term_name', 'wptexturize');
+		remove_filter('the_excerpt', 'wptexturize');
+		remove_filter('the_title', 'wptexturize');
 	}
 
 
