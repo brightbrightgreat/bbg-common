@@ -263,13 +263,15 @@
 			}
 
 			try {
-				rect = el.getBoundingClientRect();
+				var rect = el.getBoundingClientRect(),
+					scrollY = window.scrollY || document.documentElement.scrollTop,
+					scrollX = window.scrollX || document.documentElement.scrollLeft;
 
 				out = {
-					top: rect.top + window.scrollY,
-					left: rect.left + window.scrollX,
-					right: rect.right + window.scrollX,
-					bottom: rect.bottom + window.scrollY,
+					top: rect.top + scrollY,
+					left: rect.left + scrollX,
+					right: rect.right + scrollX,
+					bottom: rect.bottom + scrollY,
 					width: 0,
 					height: 0
 				};
