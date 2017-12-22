@@ -23,7 +23,6 @@ module.exports = function(grunt) {
 						'src/js/lib/debounce.js',
 						'src/js/lib/fecha.min.js',
 						'src/js/lib/js.cookie.js',
-						'src/js/lib/intersection-observer.js',
 						'src/js/lib/matches.js',
 						'src/js/lib/matchmedia.min.js',
 						'src/js/lib/param.js',
@@ -46,6 +45,10 @@ module.exports = function(grunt) {
 						'src/js/custom/vue-filters.js',
 						'src/js/custom/vue-methods.js',
 						'src/js/lib/vue-blob-forms.min.js'
+					],
+					// Move blob-phone.
+					'js/blob-phone.min.js': [
+						'src/js/lib/blob-phone.min.js'
 					],
 					// Our main Vue file.
 					'js/vue-core.min.js': [

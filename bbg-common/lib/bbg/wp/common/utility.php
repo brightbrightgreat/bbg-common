@@ -219,6 +219,7 @@ class utility {
 				$posts = get_posts(array(
 					'post_type'=>$type,
 					'numberposts'=>$max,
+					'exclude'=>$args[$prefix . 'related_excludes'],
 				));
 				break;
 
@@ -240,6 +241,7 @@ class utility {
 						'field'=>'term_id',
 						'terms'=>array($term['id']),
 					), ),
+					'exclude'=>$args[$prefix . 'related_excludes'],
 				);
 
 				$posts = get_posts($options);

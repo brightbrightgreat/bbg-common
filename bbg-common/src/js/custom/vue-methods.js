@@ -252,22 +252,26 @@
 
 			// If an object was passed (because e.g. $(.foo) was sent
 			// instead of the real deal), strip it to the basics.
-			while(typeof el === 'object' && el[0])
+			while(typeof el === 'object' && el[0]) {
 				el = el[0];
+			}
 
 			// Similarly, if an array was passed, we want just the
 			// first element.
-			while(Array.isArray(el) && el.length)
+			while(Array.isArray(el) && el.length) {
 				el = el[0];
+			}
 
 			try {
-				rect = el.getBoundingClientRect();
+				var rect = el.getBoundingClientRect(),
+					scrollY = window.scrollY || document.documentElement.scrollTop,
+					scrollX = window.scrollX || document.documentElement.scrollLeft;
 
 				out = {
-					top: rect.top + document.body.scrollTop,
-					left: rect.left + document.body.scrollLeft,
-					right: rect.right + document.body.scrollLeft,
-					bottom: rect.bottom + document.body.scrollTop,
+					top: rect.top + scrollY,
+					left: rect.left + scrollX,
+					right: rect.right + scrollX,
+					bottom: rect.bottom + scrollY,
 					width: 0,
 					height: 0
 				};
