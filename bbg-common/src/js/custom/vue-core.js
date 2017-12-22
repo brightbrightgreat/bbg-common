@@ -33,6 +33,22 @@ var app = new Vue({
 					vue.heartbeat(vue);
 				}, 1800000);
 			}
+
+			// Wp Clean.
+			// makes it easier to tell where images are in WYSIWYG content
+			document.querySelectorAll('.t_wysiwyg img:not(.wp-smiley):not(.emoji):not(.alignleft):not(.alignright):not(.aligncenter)').forEach(function(v,k){
+				var parent = v.parentNode;
+
+				if(!parent.classList.contains('alignleft') && !parent.classList.contains('alignright') && !parent.classList.contains('aligncenter')) {
+					parent.classList.add('has-img');
+				}
+			});
+
+			document.querySelectorAll('iframe').forEach(function(v,k){
+				v.parentNode.classList.add('has-embed');
+			});
+
+			// #todo make videos fit!
 		},
 
 		// Runs when the window has been resized. This is throttled for
