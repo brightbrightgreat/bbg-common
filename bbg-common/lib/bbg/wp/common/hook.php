@@ -415,8 +415,7 @@ class hook extends base\hook {
 
 		if (
 			static::$gtm &&
-			!is_user_loged_in() &&
-			!BBG_TESTMODE
+			((!BBG_TESTMODE && !is_user_logged_in()) || isset($_GET['gtm']))
 		) {
 			return static::$gtm;
 		}
