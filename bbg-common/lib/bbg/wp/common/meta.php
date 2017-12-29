@@ -119,9 +119,9 @@ class meta extends base\hook {
 		elseif (is_post_type_archive()) {
 			$post_type = get_post_type_object($post->post_type);
 			$key = ($post_type->rewrite ? $post_type->rewrite['slug'] : $post_type->name);
-			$archive = get_page_by_path($key,OBJECT);
+			$archive = get_page_by_path($key, OBJECT);
 
-			if($archive) {
+			if ($archive) {
 				// Try OpenGraph first.
 				$title = ($og ? carbon_get_post_meta($archive->ID, 'og_title') : $title);
 
@@ -131,14 +131,14 @@ class meta extends base\hook {
 				}
 			}
 
-			if(!$title) {
+			if (!$title) {
 				$title = $post_type->label;
 			}
 		}
 
 		// Still no title but we're here for og?
 		// Let's grab the site-wide og default.
-		if(!$title && $og) {
+		if (!$title && $og) {
 			$title = carbon_get_theme_option('og_title');
 		}
 
@@ -232,10 +232,10 @@ class meta extends base\hook {
 		// Custom post type archives.
 		elseif (is_post_type_archive()) {
 			$post_type = get_post_type_object($post->post_type);
-			$key = ($post_type->rewrite ? $post_type->rewrite['slug'] :  $post_type->name);
-			$archive = get_page_by_path($key,OBJECT);
+			$key = ($post_type->rewrite ? $post_type->rewrite['slug'] : $post_type->name);
+			$archive = get_page_by_path($key, OBJECT);
 
-			if($archive) {
+			if ($archive) {
 				// Try OpenGraph first.
 				$description = ($og ? carbon_get_post_meta($archive->ID, 'og_description') : $description);
 
@@ -246,14 +246,14 @@ class meta extends base\hook {
 			}
 
 			// Still no description?
-			if(!$description) {
+			if (!$description) {
 				$description = $post_type->description;
 			}
 		}
 
 		// Still no title but we're here for og?
 		// Let's grab the site-wide og default.
-		if(!$description && $og) {
+		if (!$description && $og) {
 			$description = carbon_get_theme_option('og_description');
 		}
 
@@ -325,7 +325,6 @@ class meta extends base\hook {
 	 * OG Meta
 	 *
 	 * This adds the appropriate Open Graph Meta to the page.
-	 *
 	 */
 	public static function og_meta() {
 
@@ -387,7 +386,6 @@ class meta extends base\hook {
 		// An array will help us get a handle on whitespace
 		// and prevent a lot of PHP breakouts.
 		$out = array();
-
 
 		// Twitter Card Style.
 		$out['twitter:card'] = array(
@@ -460,7 +458,7 @@ class meta extends base\hook {
 		}
 
 		// Default type/author.
-		$out['author'] =  array(
+		$out['author'] = array(
 			'name'=>'author',
 			'content'=>$name,
 		);
@@ -489,7 +487,7 @@ class meta extends base\hook {
 				'content'=>$post->post_date,
 			);
 
-			// Categories
+			// Categories.
 			if ($categories) {
 				$out['article:section'] = array(
 					'property'=>'article:section',
@@ -527,10 +525,10 @@ class meta extends base\hook {
 		$out = apply_filters('bbg_common_og_meta', $out);
 
 		// Echo our meta.
-		foreach($out as $item) {
+		foreach ($out as $item) {
 			echo '<meta ';
 
-			foreach($item as $attr=>$value) {
+			foreach ($item as $attr=>$value) {
 				echo $attr . '="' . $value . '" ';
 			};
 
