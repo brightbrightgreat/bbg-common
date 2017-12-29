@@ -63,8 +63,8 @@ abstract class fields extends base\hook {
 		Container::make('post_meta', 'og', 'Social Sharing - Open Graph Settings')
 
 		// Display location.
-		->where('post_type', 'IN', apply_filters('cf_og_meta_post_types', $post_types))
-		->where('post_id', 'NOT IN', apply_filters('cf_og_meta_exclude', array(0)))
+		->where('post_type', 'IN', apply_filters('bbg_common_og_meta_post_types', $post_types))
+		->where('post_id', 'NOT IN', apply_filters('bbg_common_og_meta_exclude', array(0)))
 
 		// Set up fields.
 		->add_fields(array(
