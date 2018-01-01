@@ -154,7 +154,7 @@ abstract class modal extends hook {
 		$base = trailingslashit($base) . 'lib/bbg/modal/';
 
 		// If this directory doesn't exist, we have nothing to do.
-		if (!is_dir($base)) {
+		if (!@is_dir($base)) {
 			return;
 		}
 
