@@ -98,7 +98,7 @@ abstract class modal extends hook {
 		}
 
 		// Parse the transition attributes.
-		$outer = '<transition';
+		$outer = '<transition v-cloak';
 		if (is_array(static::TRANSITION_ATTS) && count(static::TRANSITION_ATTS)) {
 			foreach (static::TRANSITION_ATTS as $k=>$v) {
 				r_cast::string($k, true);
@@ -107,7 +107,7 @@ abstract class modal extends hook {
 				r_cast::string($v, true);
 				r_sanitize::whitespace($v);
 
-				$outer .= " $k=" . '"' . esc_attr($v) . '"';
+				$outer .= " $k=" . '"' . static::esc_attr($v) . '"';
 			}
 		}
 		$outer .= '>';
@@ -130,7 +130,7 @@ abstract class modal extends hook {
 					}
 				}
 
-				$outer .= " $k=" . '"' . esc_attr($v) . '"';
+				$outer .= " $k=" . '"' . static::esc_attr($v) . '"';
 			}
 		}
 		// If overlay isn't set, add the default class.
@@ -141,6 +141,21 @@ abstract class modal extends hook {
 
 		// Throw in the inner contents, close it off, and return.
 		return "{$outer}{$inner}</div></transition>";
+	}
+
+	/**
+	 * Escape Attribute Values
+	 *
+	 * @param string $attribute Attribute.
+	 * @return string Attribute.
+	 */
+	protected static function esc_attr(string $attr) {
+		r_sanitize::quotes($attr);
+		return str_replace(
+			'"',
+			'&quot;',
+			$attr
+		);
 	}
 
 	/**
