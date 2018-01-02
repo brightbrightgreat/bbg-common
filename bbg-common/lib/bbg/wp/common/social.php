@@ -97,26 +97,24 @@ class social {
 	 */
 	public static function get_share_url(string $network=null, $post=null) {
 
-		// First, is the network valid?
-		// If not, get out.
+		// First, is the network valid? If not, get out.
 		if (!isset(static::SHARING_NETWORKS[$network])) {
 			return false;
 		}
 
-		// If our post is not an object,
-		// We need to fetch the post in question.
+		// If our post is not an object, we need to fetch the post in
+		// question.
 		if (!is_a($post, 'WP_Post')) {
 
 			// Typcast as integer.
-			r_cast::int($post);
+			r_cast::int($post, true);
 
 			// Get post.
-			$post = get_post((int) $post);
+			$post = get_post($post);
 		}
 
-		// Okay, if we have a post object now,
-		// We can compose the URL.
-		if (is_a($post, 'WP_Post')) {
+		// Okay, if we have a post object now, we can compose the URL.
+		if (is_a($post, 'WP_Post') && $post->ID) {
 
 			// Permalink.
 			$permalink = get_permalink($post->ID);
@@ -146,14 +144,14 @@ class social {
 				urlencode($via)
 			);
 
+			// One last sanitization pass to make sure it is well-formed.
 			r_sanitize::url($url);
 
-			return $url;
+			// Return or cry.
+			return $url ? $url : false;
 		}
 
-		// We still didn't have a post,
-		// So return false.
+		// We still didn't have a post, so return false.
 		return false;
-
 	}
 }
