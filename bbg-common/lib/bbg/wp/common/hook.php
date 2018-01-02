@@ -191,6 +191,11 @@ class hook extends base\hook {
 				$specific[] = "{$post->post_type}-{$post->post_name}";
 			}
 
+			// Admin pages.
+			if (is_admin() && isset($_GET['page'])) {
+				$specific[] = "admin-{$_GET['page']}";
+			}
+
 			if (count($specific)) {
 				// What cache-breaking version should we use?
 				$version = defined('BBG_THEME_ASSET_VERSION') ? BBG_THEME_ASSET_VERSION : static::ASSET_VERSION;
