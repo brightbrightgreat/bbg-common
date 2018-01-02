@@ -118,6 +118,27 @@ abstract class ajax {
 	}
 
 	/**
+	 * Parse Admin Request
+	 *
+	 * Same as above, but for admin-only forms.
+	 *
+	 * @param array $data Data.
+	 * @param string $privilege Privilege.
+	 * @return array Response.
+	 */
+	protected static function parse_admin(&$data, $privilege='manage_options') {
+		$out = static::parse($data);
+
+		// Check WP user privilege.
+		if (!current_user_can($privilege)) {
+			$out['errors']['other'] = 'You are not authorized to perform this operation.';
+			$out['status'] = 403;
+		}
+
+		return $out;
+	}
+
+	/**
 	 * Send Response
 	 *
 	 * AJAX responses are JSON formatted. Status codes indicate yay/nay.
