@@ -34,8 +34,8 @@ class hook extends base\hook {
 		'after_setup_theme'=>array(
 			'theme_config'=>array('priority'=>5),
 		),
-		'bbg_common_js_env'=>array(
-			'js_env'=>array('priority'=>0),
+		'bbg_common_print_js_env'=>array(
+			'js_env'=>null,
 		),
 	);
 
