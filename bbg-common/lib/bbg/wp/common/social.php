@@ -8,8 +8,7 @@
  * Table of Contents
  *
  * Get Social URL    - Function for returning social network URLs
- * Get Description   - Get a description for a page or archive
- * Get Image         - Get an image id for a page or archive
+ * Get Share URL     - Returns an appropriate share URL based on the network.
  *
  * @package brightbrightgreat/bbg-common
  * @author	Bright Bright Great <sayhello@brightbrightgreat.com>
@@ -17,6 +16,7 @@
 
 namespace bbg\wp\common;
 
+use \blobfolio\common\format as v_format;
 use \blobfolio\common\ref\format as r_format;
 use \blobfolio\common\ref\cast as r_cast;
 use \blobfolio\common\ref\sanitize as r_sanitize;
@@ -34,6 +34,16 @@ class social {
 		'twitter',
 		'vimeo',
 		'youtube',
+	);
+
+	// Sharing Networks.
+	const SHARING_NETWORKS = array(
+		'twitter'=>'https://twitter.com/share?url=%1$s&text=%2$s&via=%5$s',
+		'facebook'=>'http://www.facebook.com/sharer.php?u=%1$s',
+		'pinterest'=>'https://www.pinterest.com/pin/create/button/?url=%1$s&media=%3$s',
+		'linkedin'=>'https://www.linkedin.com/cws/share?url=%1$s&text=%2$s',
+		'google+'=>'https://plus.google.com/share?url=%1$s&text=%2$s',
+		'email'=>'mailto:?body=%4$s%%0D%%0A%%0D%%0A%1$s&subject=%2$s',
 	);
 
 	protected static $social;
@@ -75,4 +85,73 @@ class social {
 		return static::$social;
 	}
 
+
+	/**
+	 * Sharing URLs.
+	 *
+	 * Generates appropriate sharing links for a given post.
+	 *
+	 * @param string $network Network.
+	 * @param int|object $post The post for which to generate URLs. Either a post ID or a post object.
+	 * @return string|bool URL or false.
+	 */
+	public static function get_share_url(string $network=null, $post=null) {
+
+		// First, is the network valid? If not, get out.
+		if (!isset(static::SHARING_NETWORKS[$network])) {
+			return false;
+		}
+
+		// If our post is not an object, we need to fetch the post in
+		// question.
+		if (!is_a($post, 'WP_Post')) {
+
+			// Typcast as integer.
+			r_cast::int($post, true);
+
+			// Get post.
+			$post = get_post($post);
+		}
+
+		// Okay, if we have a post object now, we can compose the URL.
+		if (is_a($post, 'WP_Post') && $post->ID) {
+
+			// Permalink.
+			$permalink = get_permalink($post->ID);
+
+			// Title.
+			$title = apply_filters('bbg_common_share_title', $post->post_title);
+
+			// Excerpt.
+			$excerpt = ($post->post_excerpt ? $post->post_excerpt : $post->post_content);
+			$excerpt = apply_filters('bbg_common_share_excerpt', v_format::excerpt(strip_tags($excerpt), '25', '...', 'words'));
+
+			// Image.
+			$image = apply_filters('bbg_common_share_image', get_post_thumbnail_id($post->ID));
+			$image = wp_get_attachment_image_src($image, 'original');
+			$image = ($image ? $image[0] : '');
+
+			// Via.
+			$via = social::get_social_url('twitter');
+			$via = basename(untrailingslashit($via));
+
+			$url = sprintf(
+				static::SHARING_NETWORKS[$network],
+				urlencode($permalink),
+				$title,
+				urlencode($image),
+				$excerpt,
+				urlencode($via)
+			);
+
+			// One last sanitization pass to make sure it is well-formed.
+			r_sanitize::url($url);
+
+			// Return or cry.
+			return $url ? $url : false;
+		}
+
+		// We still didn't have a post, so return false.
+		return false;
+	}
 }

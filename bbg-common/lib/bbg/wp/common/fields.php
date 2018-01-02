@@ -118,6 +118,14 @@ abstract class fields extends base\hook {
 			Field::make('text', 'facebook_app', 'Facebook App ID')
 			->set_required(true),
 
+			// Facebook Profile ID.
+			Field::make('text', 'facebook_profile_id', 'Facebook Profile ID')
+			->set_required(true),
+
+			// Facebook App ID.
+			Field::make('text', 'facebook_app_id', 'Facebook App ID')
+			->set_required(true),
+
 		));
 	}
 

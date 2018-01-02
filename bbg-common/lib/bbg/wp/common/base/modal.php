@@ -146,7 +146,7 @@ abstract class modal extends hook {
 	/**
 	 * Escape Attribute Values
 	 *
-	 * @param string $attribute Attribute.
+	 * @param string $attr Attribute.
 	 * @return string Attribute.
 	 */
 	protected static function esc_attr(string $attr) {

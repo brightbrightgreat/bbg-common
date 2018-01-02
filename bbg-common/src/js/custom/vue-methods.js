@@ -515,6 +515,22 @@
 			this.menu = '';
 		};
 
+		Vue.prototype.socialShare = function(url) {
+			var
+			windowFeatures,
+			leftPosition,
+			topPosition,
+			width = 550,
+			height = 450;
+
+			leftPosition = (window.screen.width / 2) - ((width / 2) + 10);
+			topPosition = (window.screen.height / 2) - ((height / 2) + 50);
+
+			windowFeatures = "status=no,height=" + height + ",width=" + width + ",resizable=no,left=" + leftPosition + ",top=" + topPosition + ",screenX=" + leftPosition + ",screenY=" + topPosition + ",toolbar=no,menubar=no,scrollbars=no,location=no,directories=no";
+
+			window.open(url, 'sharer', windowFeatures);
+			return false;
+		};
 		// ------------------------------------------------------------- end misc
 
 	};

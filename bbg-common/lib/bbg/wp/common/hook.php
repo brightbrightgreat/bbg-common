@@ -34,6 +34,9 @@ class hook extends base\hook {
 		'after_setup_theme'=>array(
 			'theme_config'=>array('priority'=>5),
 		),
+		'bbg_common_js_env'=>array(
+			'js_env'=>array('priority'=>0),
+		),
 	);
 
 	// Filters: hook=>[callbacks].
@@ -186,6 +189,11 @@ class hook extends base\hook {
 			if (is_singular()) {
 				global $post;
 				$specific[] = "{$post->post_type}-{$post->post_name}";
+			}
+
+			// Admin pages.
+			if (is_admin() && isset($_GET['page'])) {
+				$specific[] = "admin-{$_GET['page']}";
 			}
 
 			if (count($specific)) {

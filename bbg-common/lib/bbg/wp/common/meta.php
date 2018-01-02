@@ -71,7 +71,6 @@ class meta extends base\hook {
 		}
 
 		// Otherwise we're dealing with an archive page of some sort.
-
 		// Front page.
 		elseif (is_front_page()) {
 			$p = get_page(get_option('page_on_front', true));
@@ -309,7 +308,7 @@ class meta extends base\hook {
 		// If no featured image, look for the site-wide fallback og
 		// image.
 		if (!$featured && $og) {
-			$featured = (int) carbon_get_theme_option('default_open_graph_image');
+			$featured = (int) carbon_get_theme_option('og_image');
 		}
 
 		// Give ourselves an option to override the value.
@@ -440,8 +439,8 @@ class meta extends base\hook {
 
 		// Page image.
 		if ($featured) {
-			$out['og:image'] = array(
-				'property'=>'og:image',
+			$out['og:image:url'] = array(
+				'property'=>'og:image:url',
 				'name'=>'twitter:image',
 				'content'=>wp_get_attachment_image_src($featured, 'og-img')[0],
 			);
