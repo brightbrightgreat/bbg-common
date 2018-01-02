@@ -43,7 +43,7 @@ class social {
 		'pinterest'=>'https://www.pinterest.com/pin/create/button/?url=%1$s&media=%3$s',
 		'linkedin'=>'https://www.linkedin.com/cws/share?url=%1$s&text=%2$s',
 		'google+'=>'https://plus.google.com/share?url=%1$s&text=%2$s',
-		'email'=>'mailto:?body=%4$s%1$s&subject=%2$s',
+		'email'=>'mailto:?body=%4$s%%0D%%0A%%0D%%0A%1$s&subject=%2$s',
 	);
 
 	protected static $social;
@@ -145,6 +145,8 @@ class social {
 				$excerpt,
 				urlencode($via)
 			);
+
+			r_sanitize::url($url);
 
 			return $url;
 		}
