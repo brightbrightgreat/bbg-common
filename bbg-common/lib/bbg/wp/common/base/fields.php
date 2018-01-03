@@ -16,7 +16,7 @@ use \Carbon_Fields\Field;
 use \blobfolio\common\data;
 use \blobfolio\common\ref\sanitize as r_sanitize;
 
-abstract class fields extends base\hook {
+abstract class fields extends hook {
 
 	// Actions: hook=>[callbacks].
 	const ACTIONS = array(
@@ -54,10 +54,10 @@ abstract class fields extends base\hook {
 			'public'=>true,
 		));
 
-		foreach($post_types as $type) {
+		foreach ($post_types as $type) {
 			static::$linkables[] = array(
 				'type'=>'post',
-				'post_type'=>$type
+				'post_type'=>$type,
 			);
 		}
 

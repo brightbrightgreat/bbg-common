@@ -128,6 +128,7 @@ spl_autoload_register(
                 'bbg\\wp\\common\\base\\ajax' => '/bbg/wp/common/base/ajax.php',
                 'bbg\\wp\\common\\base\\blobject' => '/bbg/wp/common/base/blobject.php',
                 'bbg\\wp\\common\\base\\cron' => '/bbg/wp/common/base/cron.php',
+                'bbg\\wp\\common\\base\\fields' => '/bbg/wp/common/base/fields.php',
                 'bbg\\wp\\common\\base\\hook' => '/bbg/wp/common/base/hook.php',
                 'bbg\\wp\\common\\base\\modal' => '/bbg/wp/common/base/modal.php',
                 'bbg\\wp\\common\\base\\partial' => '/bbg/wp/common/base/partial.php',
