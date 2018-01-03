@@ -20,12 +20,25 @@ class fields extends base\fields {
 
 	// Actions: hook=>[callbacks].
 	const ACTIONS = array(
+		'after_setup_theme'=>array(
+			'fields_init'=>null,
+		),
 		'carbon_fields_register_fields'=>array(
 			'tracking'=>null,
 			'mailchimp'=>null,
 			'og_meta'=>null,
 		),
 	);
+
+
+	/**
+	 * Init fields
+	 *
+	 * @return void Nothing.
+	 */
+	public static function fields_init() {
+		\Carbon_Fields\Carbon_Fields::boot();
+	}
 
 
 	/**

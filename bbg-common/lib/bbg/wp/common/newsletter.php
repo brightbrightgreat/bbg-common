@@ -142,7 +142,7 @@ class newsletter {
 			// Trigger an action so themes can do something with this
 			// info if desired.
 			if ($status2 !== $status) {
-				do_action('mailchimp_list_status', $email, $status2);
+				do_action('bbg_common_mc_status_update', $email, $status2);
 			}
 
 			return $status2;
@@ -192,7 +192,7 @@ class newsletter {
 
 			// Trigger an action so themes can do something with this
 			// info if desired.
-			do_action('mailchimp_list_status', $email, $status);
+			do_action('bbg_common_mc_status_update', $email, $status);
 
 			return $status;
 		} catch (Throwable $e) {

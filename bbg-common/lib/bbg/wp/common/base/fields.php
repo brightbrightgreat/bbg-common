@@ -20,25 +20,33 @@ abstract class fields extends hook {
 
 	// Actions: hook=>[callbacks].
 	const ACTIONS = array(
-		'after_setup_theme'=>array(
-			'fields_init'=>null,
-		),
 	);
 
 	// Filters: hook=>[callbacks].
 	const FILTERS = array(
 	);
 
-	protected static $linkeables = array();
-
-	/**
-	 * Init fields
-	 *
-	 * @return void Nothing.
-	 */
-	public static function fields_init() {
-		\Carbon_Fields\Carbon_Fields::boot();
-	}
+	// The base for linkables always includes
+	// Posts and pages,
+	// Category and post tag.
+	protected static $linkables = array(
+		array(
+			'type'=>'post',
+			'post_type'=>'post',
+		),
+		array(
+			'type'=>'post',
+			'post_type'=>'page',
+		),
+		array(
+			'type'=>'term',
+			'taxonomy'=>'category',
+		),
+		array(
+			'type'=>'term',
+			'taxonomy'=>'post_tag'
+		)
+	);
 
 
 	/**
@@ -47,11 +55,14 @@ abstract class fields extends hook {
 	 * Generates an array of valid post types and taxonomies
 	 * That can be used in an association field.
 	 *
-	 * @return array $linkeables.
+	 * @return array $linkables.
 	 */
 	public static function get_linkables() {
+
+		// Let's grab all our custom public post types.
 		$post_types = get_post_types(array(
 			'public'=>true,
+			'_builtin'=>false,
 		));
 
 		foreach ($post_types as $type) {
@@ -61,7 +72,20 @@ abstract class fields extends hook {
 			);
 		}
 
-		print_r(static::$linkables);
+		// Let's grab all our custom public taxonomies
+		$taxonomies = get_taxonomies(array(
+			'public'=>true,
+			'_builtin'=>false,
+		));
+
+		foreach ($taxonomies as $tax) {
+			static::$linkables[] = array(
+				'type'=>'term',
+				'taxonomy'=>$tax,
+			);
+		}
+
+		return static::$linkables;
 	}
 
 
