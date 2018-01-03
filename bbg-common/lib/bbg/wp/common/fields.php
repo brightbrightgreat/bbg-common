@@ -16,7 +16,7 @@ use \Carbon_Fields\Field;
 use \blobfolio\common\data;
 use \blobfolio\common\ref\sanitize as r_sanitize;
 
-abstract class fields extends base\hook {
+class fields extends base\hook {
 
 	// Actions: hook=>[callbacks].
 	const ACTIONS = array(
@@ -176,20 +176,5 @@ abstract class fields extends base\hook {
 				->set_help_text('This text will be shown when a user leaves the list.'),
 			)
 		);
-	}
-
-
-	/**
-	 * Clone fields.
-	 *
-	 * This sets up common field types that we can later clone into field groups.
-	 *
-	 * @param string $name The name of the field group to clone.
-	 * @param string $prefix Optional. Prefix for the field names, used to avoid conflicts.
-	 * @return array $fields Array of fields.
-	 */
-	public static function clone_fields(string $name, string $prefix='') {
-		$fields = array();
-		return $fields;
 	}
 }
