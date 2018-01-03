@@ -79,7 +79,7 @@ class utility {
 
 							// Custom taxonomies.
 							default:
-								$link_clean['url'] = get_term_link($l['id'], $l['subtype']);
+								$link_clean['url'] = get_term_link((int) $l['id'], $l['subtype']);
 								break;
 						}
 					}
