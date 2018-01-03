@@ -85,7 +85,7 @@ abstract class fields extends hook {
 			);
 		}
 
-		return static::$linkables;
+		return apply_filters('bbg_common_linkables', static::$linkables);
 	}
 
 
