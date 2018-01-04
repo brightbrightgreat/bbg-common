@@ -6,7 +6,7 @@
  * database rather than a hundred separate entries.
  *
  * To use, add the following to a Field::make():
- * ->set_datastore(new bbg\wp\common\fields\serialized());
+ * ->set_datastore(new bbg\wp\common\fields\serialized_post_meta());
  *
  * @package bbg-common
  * @author  Bright Bright Great <sayhello@brightbrightgreat.com>
