@@ -18,15 +18,7 @@ use \blobfolio\common\ref\sanitize as r_sanitize;
 
 abstract class fields extends hook {
 
-	// Actions: hook=>[callbacks].
-	const ACTIONS = array(
-	);
-
-	// Filters: hook=>[callbacks].
-	const FILTERS = array(
-	);
-
-	// The base for linkables always includes
+	// The base for linkables always includes:
 	// Posts and pages,
 	// Category and post tag.
 	protected static $linkables = array(
@@ -44,8 +36,8 @@ abstract class fields extends hook {
 		),
 		array(
 			'type'=>'term',
-			'taxonomy'=>'post_tag'
-		)
+			'taxonomy'=>'post_tag',
+		),
 	);
 
 
@@ -72,7 +64,7 @@ abstract class fields extends hook {
 			);
 		}
 
-		// Let's grab all our custom public taxonomies
+		// Let's grab all our custom public taxonomies.
 		$taxonomies = get_taxonomies(array(
 			'public'=>true,
 			'_builtin'=>false,
