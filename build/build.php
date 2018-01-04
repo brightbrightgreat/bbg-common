@@ -103,6 +103,11 @@ shell_exec(
 	$from_plugindir . 'grunt clean'
 );
 
+// Rebuild JS.
+shell_exec(
+	$from_plugindir . 'grunt javascript'
+);
+
 // Run phpab to give us a better autoload file.
 shell_exec(
 	escapeshellcmd(PHPAB) . ' -e "' . PLUGIN_BASE . 'node_modules/*" -n --tolerant -o ' . PLUGIN_BASE . 'lib/autoload.php ' . PLUGIN_BASE
