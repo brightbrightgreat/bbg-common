@@ -108,14 +108,6 @@ class fields extends base\fields {
 			->set_help_text('<p>This image will be used as the thumbnail when a post or page is shared and doesn\'t have a featured Image assigned.</p><p>Image should be at least 1200x630.</p>'),
 
 			// Facebook Profile ID.
-			Field::make('text', 'facebook_prof', 'Facebook Profile ID')
-			->set_required(true),
-
-			// Facebook App ID.
-			Field::make('text', 'facebook_app', 'Facebook App ID')
-			->set_required(true),
-
-			// Facebook Profile ID.
 			Field::make('text', 'facebook_profile_id', 'Facebook Profile ID')
 			->set_required(true),
 

@@ -1,12 +1,12 @@
 <?php
 /**
- * Postmeta Datastore: Serialize Complex Fields
+ * Termmeta Datastore: Serialize Complex Fields
  *
  * Store "Complex" field data as a single, serialized row in the
  * database rather than a hundred separate entries.
  *
  * To use, add the following to a Field::make():
- * ->set_datastore(new bbg\wp\common\fields\serialized_post_meta());
+ * ->set_datastore(new bbg\wp\common\fields\serialized_term_meta());
  *
  * @package bbg-common
  * @author  Bright Bright Great <sayhello@brightbrightgreat.com>
@@ -20,7 +20,7 @@ use \Carbon_Fields\Datastore\Datastore;
 /**
  * Stores serialized values in the database
  */
-class serialized_post_meta extends Datastore {
+class serialized_term_meta extends Datastore {
 
 	/**
 	 * Init
@@ -37,7 +37,7 @@ class serialized_post_meta extends Datastore {
 	 * @return string
 	 */
 	public function get_meta_type() {
-		return 'post';
+		return 'term';
 	}
 
 	/**
@@ -47,7 +47,7 @@ class serialized_post_meta extends Datastore {
 	 */
 	public function get_table_name() {
 		global $wpdb;
-		return $wpdb->postmeta;
+		return $wpdb->termmeta;
 	}
 
 	/**
@@ -56,7 +56,7 @@ class serialized_post_meta extends Datastore {
 	 * @return string
 	 */
 	public function get_table_field_name() {
-		return 'post_id';
+		return 'term_id';
 	}
 
 	/**
