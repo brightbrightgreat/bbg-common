@@ -1,6 +1,6 @@
 <?php
 /**
- * Datastore: Serialize Complex Fields
+ * Postmeta Datastore: Serialize Complex Fields
  *
  * Store "Complex" field data as a single, serialized row in the
  * database rather than a hundred separate entries.
@@ -20,7 +20,7 @@ use \Carbon_Fields\Datastore\Datastore;
 /**
  * Stores serialized values in the database
  */
-class serialized extends Datastore {
+class serialized_post_meta extends Datastore {
 
 	/**
 	 * Init
