@@ -63,6 +63,10 @@ class utility {
 				if (is_array($link['link_internal'])) {
 					$l = $link['link_internal'][0];
 
+					// Carbon Fields doesn't always return a proper int,
+					// but that's what we always want.
+					r_cast::int($l['id'], true);
+
 					// If this is a term.
 					if ('term' === $l['type']) {
 						switch ($l['subtype']) {
@@ -79,11 +83,11 @@ class utility {
 
 							// Custom taxonomies.
 							default:
-								$link_clean['url'] = get_term_link((int) $l['id'], $l['subtype']);
+								$link_clean['url'] = get_term_link($l['id'], $l['subtype']);
 								break;
 						}
 					}
-
+					// A post, etc.
 					else {
 						$link_clean['url'] = get_permalink($l['id']);
 					}
