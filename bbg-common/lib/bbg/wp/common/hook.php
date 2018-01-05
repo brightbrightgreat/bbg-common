@@ -323,6 +323,10 @@ class hook extends base\hook {
 		// Merge in any other data that might be floating around.
 		$data = apply_filters('bbg_common_js_env', $data);
 
+		// Let's do a quick pass to make sure there aren't any objects
+		// that might screw up encoding.
+		utility::object_to_array($data);
+
 		// Fix UTF-8 and print.
 		r_sanitize::utf8($data);
 		echo "\n" . '<script id="bbg-common-env">var bbgEnv=' . json_encode($data) . ";</script>\n";

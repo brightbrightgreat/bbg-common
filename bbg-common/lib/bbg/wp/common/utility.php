@@ -255,4 +255,34 @@ class utility {
 
 		return $posts;
 	}
+
+	/**
+	 * Objects to Arrays
+	 *
+	 * WordPress objects like WP_Post cannot be serialized for JS
+	 * output; this will attempt to typecast them.
+	 *
+	 * @param mixed $var Variable.
+	 * @return bool True/false.
+	 */
+	public static function object_to_array(&$var) {
+		// Recurse?
+		if (is_array($var)) {
+			foreach ($var as $k=>$v) {
+				static::object_to_array($var[$k]);
+			}
+		}
+		elseif (
+			is_object($var) &&
+			(
+				is_a($var, 'WP_Post') ||
+				is_a($var, 'WP_Term') ||
+				is_a($var, 'WP_User')
+			)
+		) {
+			$var = (array) $var;
+		}
+
+		return true;
+	}
 }
