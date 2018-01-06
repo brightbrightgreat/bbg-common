@@ -12,6 +12,7 @@
 namespace bbg\wp\common;
 
 use \blobfolio\common\data;
+use \blobfolio\common\ref\cast as r_cast;
 use \blobfolio\common\ref\sanitize as r_sanitize;
 
 class hook extends base\hook {
@@ -322,10 +323,13 @@ class hook extends base\hook {
 
 		// Merge in any other data that might be floating around.
 		$data = apply_filters('bbg_common_js_env', $data);
+		r_cast::array($data);
 
 		// Let's do a quick pass to make sure there aren't any objects
 		// that might screw up encoding.
-		utility::object_to_array($data);
+		if (utility::object_to_array($data)) {
+			debug::wrong('WordPress objects are not serializable as JSON. Data should be cast to an Array first.');
+		}
 
 		// Fix UTF-8 and print.
 		r_sanitize::utf8($data);
