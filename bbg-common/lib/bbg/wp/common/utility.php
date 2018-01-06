@@ -263,13 +263,15 @@ class utility {
 	 * output; this will attempt to typecast them.
 	 *
 	 * @param mixed $var Variable.
-	 * @return bool True/false.
+	 * @return int Changes.
 	 */
 	public static function object_to_array(&$var) {
+		$changes = 0;
+
 		// Recurse?
 		if (is_array($var)) {
 			foreach ($var as $k=>$v) {
-				static::object_to_array($var[$k]);
+				$changes += static::object_to_array($var[$k]);
 			}
 		}
 		elseif (
@@ -281,8 +283,9 @@ class utility {
 			)
 		) {
 			$var = (array) $var;
+			return 1;
 		}
 
-		return true;
+		return $changes;
 	}
 }
