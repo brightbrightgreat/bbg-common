@@ -132,6 +132,7 @@ spl_autoload_register(
                 'bbg\\wp\\common\\base\\hook' => '/bbg/wp/common/base/hook.php',
                 'bbg\\wp\\common\\base\\modal' => '/bbg/wp/common/base/modal.php',
                 'bbg\\wp\\common\\base\\partial' => '/bbg/wp/common/base/partial.php',
+                'bbg\\wp\\common\\debug' => '/bbg/wp/common/debug.php',
                 'bbg\\wp\\common\\fields' => '/bbg/wp/common/fields.php',
                 'bbg\\wp\\common\\fields\\serialized_post_meta' => '/bbg/wp/common/fields/serialized_post_meta.php',
                 'bbg\\wp\\common\\fields\\serialized_term_meta' => '/bbg/wp/common/fields/serialized_term_meta.php',
