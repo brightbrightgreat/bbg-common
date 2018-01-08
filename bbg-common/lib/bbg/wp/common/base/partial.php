@@ -30,16 +30,17 @@ abstract class partial extends hook {
 	// Default wrapper classes.
 	const WRAPPER_CLASSES = array();
 
-	// Actions: hook=>[callbacks].
-	const ACTIONS = array(
-	);
-
-	// Filters: hook=>[callbacks].
+	// Filters: hook=>[callbacks]. Generally child classes don't need
+	// this.
 	const FILTERS = array(
 		'bbg_common_js_env'=>array(
 			'js_env'=>null,
 		),
 	);
+
+	// Disable pushing data to Vue JS env. Vue markup can still be used,
+	// the data will just need to come from somewhere else.
+	const NO_ENV = false;
 
 	protected static $data = array(); // Collected Vue data (if any).
 	protected static $ids = array();  // Unique IDs generated (if any).
@@ -282,7 +283,7 @@ abstract class partial extends hook {
 	 * @return bool True/false.
 	 */
 	protected static function save_env(string $id, array &$data) {
-		if (!count($data)) {
+		if (static::NO_ENV || !count($data)) {
 			return false;
 		}
 
