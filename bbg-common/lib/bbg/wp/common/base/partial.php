@@ -30,11 +30,8 @@ abstract class partial extends hook {
 	// Default wrapper classes.
 	const WRAPPER_CLASSES = array();
 
-	// Actions: hook=>[callbacks].
-	const ACTIONS = array(
-	);
-
-	// Filters: hook=>[callbacks].
+	// Filters: hook=>[callbacks]. Generally child classes don't need
+	// this.
 	const FILTERS = array(
 		'bbg_common_js_env'=>array(
 			'js_env'=>null,
