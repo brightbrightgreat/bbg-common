@@ -41,6 +41,10 @@ abstract class partial extends hook {
 		),
 	);
 
+	// Disable pushing data to Vue JS env. Vue markup can still be used,
+	// the data will just need to come from somewhere else.
+	const NO_ENV = false;
+
 	protected static $data = array(); // Collected Vue data (if any).
 	protected static $ids = array();  // Unique IDs generated (if any).
 
@@ -282,7 +286,7 @@ abstract class partial extends hook {
 	 * @return bool True/false.
 	 */
 	protected static function save_env(string $id, array &$data) {
-		if (!count($data)) {
+		if (static::NO_ENV || !count($data)) {
 			return false;
 		}
 
