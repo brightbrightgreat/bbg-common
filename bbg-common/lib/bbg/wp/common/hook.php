@@ -82,8 +82,11 @@ class hook extends base\hook {
 		remove_filter('single_post_title', 'wptexturize');
 		remove_filter('single_tag_title', 'wptexturize');
 		remove_filter('term_name', 'wptexturize');
+		remove_filter('term_name', 'convert_chars');
 		remove_filter('the_excerpt', 'wptexturize');
+		remove_filter('the_excerpt', 'convert_chars');
 		remove_filter('the_title', 'wptexturize');
+		remove_filter('the_title', 'convert_chars');
 	}
 
 
