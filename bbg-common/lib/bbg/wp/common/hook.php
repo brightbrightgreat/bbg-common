@@ -11,7 +11,9 @@
 
 namespace bbg\wp\common;
 
+use \blobfolio\common\constants;
 use \blobfolio\common\data;
+use \blobfolio\common\format as v_format;
 use \blobfolio\common\ref\cast as r_cast;
 use \blobfolio\common\ref\sanitize as r_sanitize;
 
@@ -80,8 +82,11 @@ class hook extends base\hook {
 		remove_filter('single_post_title', 'wptexturize');
 		remove_filter('single_tag_title', 'wptexturize');
 		remove_filter('term_name', 'wptexturize');
+		remove_filter('term_name', 'convert_chars');
 		remove_filter('the_excerpt', 'wptexturize');
+		remove_filter('the_excerpt', 'convert_chars');
 		remove_filter('the_title', 'wptexturize');
+		remove_filter('the_title', 'convert_chars');
 	}
 
 
@@ -320,6 +325,23 @@ class hook extends base\hook {
 				'width'=>0,
 			),
 		);
+
+		// The geo JS requires data. Let's feed it!
+		if (defined('USE_GEO_JS') && USE_GEO_JS) {
+			$data['geo'] = array(
+				'countries'=>array(),
+				'provinces'=>v_format::array_to_indexed(constants::PROVINCES),
+				'states'=>v_format::array_to_indexed(constants::STATES),
+			);
+			// We have to manually tidy up countries a bit.
+			foreach (constants::COUNTRIES as $k=>$v) {
+				$data['geo']['countries'][] = array(
+					'key'=>$k,
+					'value'=>$v['name'],
+					'region'=>$v['region'],
+				);
+			}
+		}
 
 		// Merge in any other data that might be floating around.
 		$data = apply_filters('bbg_common_js_env', $data);

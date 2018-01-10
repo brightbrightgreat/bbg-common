@@ -21,24 +21,7 @@ abstract class fields extends hook {
 	// The base for linkables always includes:
 	// Posts and pages,
 	// Category and post tag.
-	protected static $linkables = array(
-		array(
-			'type'=>'post',
-			'post_type'=>'post',
-		),
-		array(
-			'type'=>'post',
-			'post_type'=>'page',
-		),
-		array(
-			'type'=>'term',
-			'taxonomy'=>'category',
-		),
-		array(
-			'type'=>'term',
-			'taxonomy'=>'post_tag',
-		),
-	);
+	protected static $linkables = null;
 
 
 	/**
@@ -50,6 +33,29 @@ abstract class fields extends hook {
 	 * @return array $linkables.
 	 */
 	public static function get_linkables() {
+
+		if(is_array(static::$linkables)) {
+			return apply_filters('bbg_common_linkables', static::$linkables);
+		}
+
+		static::$linkables = array(
+			array(
+				'type'=>'post',
+				'post_type'=>'post',
+			),
+			array(
+				'type'=>'post',
+				'post_type'=>'page',
+			),
+			array(
+				'type'=>'term',
+				'taxonomy'=>'category',
+			),
+			array(
+				'type'=>'term',
+				'taxonomy'=>'post_tag',
+			),
+		);
 
 		// Let's grab all our custom public post types.
 		$post_types = get_post_types(array(

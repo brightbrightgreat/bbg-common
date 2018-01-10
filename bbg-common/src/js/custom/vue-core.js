@@ -35,20 +35,7 @@ var app = new Vue({
 			}
 
 			// Wp Clean.
-			// makes it easier to tell where images are in WYSIWYG content
-			document.querySelectorAll('.t_wysiwyg img:not(.wp-smiley):not(.emoji):not(.alignleft):not(.alignright):not(.aligncenter)').forEach(function(v,k){
-				var parent = v.parentNode;
-
-				if(!parent.classList.contains('alignleft') && !parent.classList.contains('alignright') && !parent.classList.contains('aligncenter')) {
-					parent.classList.add('has-img');
-				}
-			});
-
-			document.querySelectorAll('iframe').forEach(function(v,k){
-				v.parentNode.classList.add('has-embed');
-			});
-
-			// #todo make videos fit!
+			this.wpClean();
 		},
 
 		// Runs when the window has been resized. This is throttled for
@@ -68,6 +55,43 @@ var app = new Vue({
 
 			this.onScroll();
 		}, 100),
+
+
+		// Some WordPress-specific items we need to take care of.
+		wpClean: function() {
+			// makes it easier to tell where images are in WYSIWYG content
+			document.querySelectorAll('.t_wysiwyg img:not(.wp-smiley):not(.emoji):not(.alignleft):not(.alignright):not(.aligncenter)').forEach(function(v,k){
+				var parent = v.parentNode;
+
+				if(!parent.classList.contains('alignleft') && !parent.classList.contains('alignright') && !parent.classList.contains('aligncenter') && parent.tagName !== 'PICTURE' ) {
+					parent.classList.add('has-img');
+				}
+			});
+
+			var iframes = document.querySelectorAll('iframe');
+
+			iframes.forEach(function(v,k){
+				v.parentNode.classList.add('has-embed');
+			});
+		},
+
+		fitVids: function(scope) {
+			var iframes = document.querySelectorAll('iframe');
+
+			iframes.forEach(function(v,k){
+				var parent, width, height, aspectRatio, padding;
+
+				parent = v.parentNode;
+				width = scope.offset(v).width;
+				height = scope.offset(v).height;
+				aspectRatio = height / width;
+				padding = aspectRatio * 100 + '%';
+
+				v.style.cssText = 'position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%;';
+				parent.style.cssText = 'position: relative; padding-top:' + padding + ';';
+
+			});
+		},
 
 	}, // Methods.
 
@@ -101,6 +125,9 @@ var app = new Vue({
 			window.addEventListener('scroll', this.onScroll);
 			window.addEventListener('resize', this.onResize);
 			document.addEventListener('DOMContentLoaded', this.onLoad);
+
+			// Make iframes responsive.
+			this.fitVids(this);
 
 			// Lastly, make sure we disable any active modal whenever
 			// the ESCAPE key is pressed.

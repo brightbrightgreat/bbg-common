@@ -22,6 +22,7 @@ module.exports = function(grunt) {
 						'src/js/lib/blobselect.min.js',
 						'src/js/lib/debounce.js',
 						'src/js/lib/fecha.min.js',
+						'src/js/lib/intersect-observer.js',
 						'src/js/lib/js.cookie.js',
 						'src/js/lib/matches.js',
 						'src/js/lib/matchmedia.min.js',
@@ -33,6 +34,7 @@ module.exports = function(grunt) {
 						'src/js/lib/vue.min.js',
 						'src/js/lib/vue-resource.min.js',
 						'src/js/custom/vue-ajax.js',
+						'src/js/custom/vue-directives.js',
 						'src/js/custom/vue-filters.js',
 						'src/js/custom/vue-methods.js',
 						'src/js/lib/vue-blob-forms.min.js'
@@ -42,6 +44,7 @@ module.exports = function(grunt) {
 						'src/js/lib/vue.js',
 						'src/js/lib/vue-resource.min.js',
 						'src/js/custom/vue-ajax.js',
+						'src/js/custom/vue-directives.js',
 						'src/js/custom/vue-filters.js',
 						'src/js/custom/vue-methods.js',
 						'src/js/lib/vue-blob-forms.min.js'
