@@ -48,10 +48,18 @@ class meta extends base\hook {
 	 * @return string A string that can be used as the post title.
 	 */
 	public static function get_title($loop=false, $og=false) {
+
+		if(is_404()) {
+			return '404 Not Found';
+		}
+
 		global $post;
 
 		$title = '';
-		$post_type = get_post_type_object($post->post_type);
+
+		if($post) {
+			$post_type = get_post_type_object($post->post_type);
+		}
 
 		// First, are we getting this title for a single item, either
 		// on a single- page, or in a loop context.
@@ -169,6 +177,11 @@ class meta extends base\hook {
 	 * @return string A string that can be used as the post description.
 	 */
 	public static function get_description($loop=false, $og=false) {
+
+		if (is_404()) {
+			return 'Sorry, we couldn\'t find the post you were looking for.';
+		}
+
 		global $post;
 
 		$description = '';

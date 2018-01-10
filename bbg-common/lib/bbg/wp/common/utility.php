@@ -68,7 +68,7 @@ class utility {
 					r_cast::int($l['id'], true);
 
 					// If this is a term.
-					if ('term' === $l['type']) {
+					if (isset($l['type']) && 'term' === $l['type']) {
 						switch ($l['subtype']) {
 
 							// Category.
@@ -217,6 +217,10 @@ class utility {
 
 		$posts = array();
 		$strip = $prefix . 'related_';
+
+		if(!isset($args['related_type'])) {
+			$args['related_type'] = 'auto';
+		}
 
 		switch ($args[$prefix . 'related_type']) {
 			case 'auto':
