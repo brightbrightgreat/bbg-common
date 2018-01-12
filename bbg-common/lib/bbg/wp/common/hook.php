@@ -372,7 +372,7 @@ class hook extends base\hook {
 
 		// Fix UTF-8 and print.
 		r_sanitize::utf8($data);
-		echo "\n" . '<script type="application/json" id="bbg-common-env">' . json_encode($data) . "</script>\n";
+		echo "\n" . '<script type="application/json" id="bbg-common-env">' . json_encode($data, JSON_HEX_AMP | JSON_HEX_TAG) . "</script>\n";
 	}
 
 	/**
