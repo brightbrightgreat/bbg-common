@@ -1,7 +1,7 @@
 /**
- * Vue Filters
+ * Vue Directives
  *
- * This contains a collection of handy filters for Vue. It is loaded
+ * This contains a collection of handy directives for Vue. It is loaded
  * automatically.
  */
 (function(){
@@ -103,6 +103,42 @@
 				else {
 					el.fireEvent('onchange');
 				}
+			}
+		});
+
+		/**
+		 * v-click-outside
+		 *
+		 * Detect whether clicks have happened outside this element.
+		 *
+		 * @param callback $callback Callback function.
+		 */
+		Vue.directive('clickOutside', {
+			bind: function(el, binding, vNode) {
+				// Provided expression must evaluate to a function.
+				if (typeof binding.value !== 'function') {
+					console.warn('[v-click-outside:] provided expression "' + binding.expression + '" is not a function.');
+					return;
+				}
+
+				// Define Handler and cache it on the element.
+				var bubble = binding.modifiers.bubble,
+					handler = function(e) {
+						if (bubble || (!el.contains(e.target) && el !== e.target)) {
+							binding.value(e);
+						}
+					};
+
+				el.__vueClickOutside__ = handler;
+
+				// add Event Listeners
+				document.addEventListener('click', handler);
+			},
+
+			unbind: function(el, binding) {
+				// Remove Event Listeners
+				document.removeEventListener('click', el.__vueClickOutside__);
+				el.__vueClickOutside__ = null;
 			}
 		});
 
