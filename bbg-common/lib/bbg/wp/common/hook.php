@@ -44,6 +44,9 @@ class hook extends base\hook {
 
 	// Filters: hook=>[callbacks].
 	const FILTERS = array(
+		'bbg_common_js_env'=>array(
+			'infinite_js_env'=>array('priority'=>5),
+		),
 		'body_class'=>array(
 			'body_class'=>null,
 		),
@@ -167,7 +170,7 @@ class hook extends base\hook {
 		// Bump this one thing to the top of the list.
 		array_unshift(static::$vue_deps, 'bbg-common-vue-deps-js');
 
-		// A phone number format helper. This conditionally enqueued
+		// A phone number format helper. This is conditionally enqueued
 		// because of its size. To turn it on, define the USE_PHONE_JS
 		// constant.
 		wp_register_script(
@@ -179,6 +182,20 @@ class hook extends base\hook {
 		);
 		if (defined('USE_PHONE_JS') && USE_PHONE_JS) {
 			static::$vue_deps[] = 'blob-phone-js';
+		}
+
+		// Infinite scroll helper. This is conditionally enqueued
+		// because it usually isn't needed. Define USE_INFINITE_JS
+		// somewhere to turn it on.
+		wp_register_script(
+			'bbg-common-infinite-js',
+			"{$js_url}vue-infinite.min.js",
+			array('bbg-common-vue-deps-js'),
+			static::ASSET_VERSION,
+			true
+		);
+		if (defined('USE_INFINITE_JS') && USE_INFINITE_JS) {
+			static::$vue_deps[] = 'bbg-common-infinite-js';
 		}
 
 		// Let's look for theme assets based on the current page.
@@ -356,6 +373,49 @@ class hook extends base\hook {
 		// Fix UTF-8 and print.
 		r_sanitize::utf8($data);
 		echo "\n" . '<script id="bbg-common-env">var bbgEnv=' . json_encode($data) . ";</script>\n";
+	}
+
+	/**
+	 * Infinite Scroll Archive Env
+	 *
+	 * Populate some sane defaults for archive data when using infinite
+	 * scroll.
+	 *
+	 * This runs with a low priority, so any later filters can make
+	 * modifications as needed.
+	 *
+	 * Note: It is up to themes to populate this.posts with content.
+	 *
+	 * @param array $data Data.
+	 * @return array Data.
+	 */
+	public static function infinite_js_env($data) {
+		// This only applies if using infinite scroll.
+		if (defined('USE_INFINITE_JS') && USE_INFINITE_JS) {
+			global $wp_query;
+			$big = 999999;
+
+			$data['archive'] = array(
+				// The base URL for this archive's pages.
+				'base'=>str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+				// The ID of the on-page "marker" used to trigger scroll.
+				'marker'=>'infinite-marker',
+				// A value we can use to make sure we've mounted our scroll.
+				'mounted'=>false,
+				// An offset so results can be pulled early.
+				'offset'=>100,
+				// The current page.
+				'page'=>max(1, get_query_var('paged')),
+				// The total number of pages.
+				'pages'=>$wp_query->max_num_pages,
+			);
+
+			// Make sure page and pages are integers.
+			$data['archive']['page'] = (int) $data['archive']['page'];
+			$data['archive']['pages'] = (int) $data['archive']['pages'];
+		}
+
+		return $data;
 	}
 
 	// ----------------------------------------------------------------- end footer
