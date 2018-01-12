@@ -49,7 +49,7 @@ class meta extends base\hook {
 	 */
 	public static function get_title($loop=false, $og=false) {
 
-		if(is_404()) {
+		if (is_404()) {
 			return '404 Not Found';
 		}
 
@@ -57,7 +57,7 @@ class meta extends base\hook {
 
 		$title = '';
 
-		if($post) {
+		if ($post) {
 			$post_type = get_post_type_object($post->post_type);
 		}
 
