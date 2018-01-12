@@ -6,9 +6,18 @@
  */
 (function(){
 
+// Pull the data from the page.
+var appData = document.getElementById('bbg-common-env');
+if (appData) {
+	appData = JSON.parse(appData.textContent);
+}
+else {
+	appData = {};
+}
+
 var app = new Vue({
 	el: '#vue-app',
-	data: window.bbgEnv || {},
+	data: appData,
 	methods: {
 
 		// Runs onScroll.

@@ -372,7 +372,7 @@ class hook extends base\hook {
 
 		// Fix UTF-8 and print.
 		r_sanitize::utf8($data);
-		echo "\n" . '<script id="bbg-common-env">var bbgEnv=' . json_encode($data) . ";</script>\n";
+		echo "\n" . '<script type="application/json" id="bbg-common-env">' . json_encode($data) . "</script>\n";
 	}
 
 	/**
@@ -504,6 +504,11 @@ class hook extends base\hook {
 	 * @return string|bool Code or false.
 	 */
 	protected static function get_gtm() {
+		// Allow themes to handle this themselves.
+		if (defined('NO_GTM') && NO_GTM) {
+			return false;
+		}
+
 		if (is_null(static::$gtm)) {
 			static::$gtm = carbon_get_theme_option('gtm');
 			if (!static::$gtm) {
