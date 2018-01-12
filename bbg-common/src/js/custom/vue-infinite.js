@@ -58,14 +58,12 @@
 							el.innerHTML = r.body;
 
 							// Parse it to see if we have our blobEnv var.
-							var script = el.querySelector('#bbg-common-env').textContent,
-								first = script.indexOf('bbgEnv={'),
-								last = script.lastIndexOf('}'),
+							var script = el.querySelector('#bbg-common-env'),
 								i;
 
 							// If we have positions, we probably have data.
-							if ((first !== -1) && (last !== -1)) {
-								var json = JSON.parse(script.substr(first + 7, last - first - 6));
+							if (script) {
+								var json = JSON.parse(script.textContent);
 
 								// Add whatever posts.
 								if (
