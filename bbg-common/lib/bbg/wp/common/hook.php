@@ -397,7 +397,7 @@ class hook extends base\hook {
 
 			$data['archive'] = array(
 				// The base URL for this archive's pages.
-				'base'=>str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+				'base'=>str_replace($big, '%#%', get_pagenum_link($big, false)),
 				// The ID of the on-page "marker" used to trigger scroll.
 				'marker'=>'infinite-marker',
 				// A value we can use to make sure we've mounted our scroll.
