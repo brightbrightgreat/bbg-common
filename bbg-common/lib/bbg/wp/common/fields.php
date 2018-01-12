@@ -125,6 +125,11 @@ class fields extends base\fields {
 	 * @return void Nothing.
 	 */
 	public static function tracking() {
+		// Allow themes to handle this themselves.
+		if (defined('NO_GTM') && NO_GTM) {
+			return;
+		}
+
 		Container::make('theme_options', 'Analytics & Tracking')
 		->set_page_file('site-tracking')
 		->set_icon('dashicons-chart-bar')

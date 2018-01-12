@@ -504,6 +504,11 @@ class hook extends base\hook {
 	 * @return string|bool Code or false.
 	 */
 	protected static function get_gtm() {
+		// Allow themes to handle this themselves.
+		if (defined('NO_GTM') && NO_GTM) {
+			return false;
+		}
+
 		if (is_null(static::$gtm)) {
 			static::$gtm = carbon_get_theme_option('gtm');
 			if (!static::$gtm) {
