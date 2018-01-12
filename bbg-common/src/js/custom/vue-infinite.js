@@ -16,6 +16,47 @@
 	var BBGInfiniteVue = {};
 	BBGInfiniteVue.install = function(Vue, options){
 
+		Vue.mixin({
+			mounted: function(){
+				// We want to set up an Observer to handle infinite
+				// scroll, but only once, and only if needed.
+				if (
+					(typeof this.archive !== 'undefined') &&
+					(false === this.archive.mounted) &&
+					(this.archive.pages > this.archive.page) &&
+					(typeof this.archive.marker === 'string') &&
+					(this.archive.base.indexOf('%#%') !== -1)
+				) {
+					// Find the marker.
+					var vue = this,
+						archiveObserverEl = document.getElementById(this.archive.marker);
+
+					// Update the mounted flag so we don't re-run.
+					this.archive.mounted = true;
+
+					// Add an observer if the element is a Go!
+					if (archiveObserverEl) {
+						// Make sure the offset is a number.
+						this.archive.offset = parseInt(this.archive.offset, 10) || 0;
+
+						var archiveObserver = new IntersectionObserver(function(entries, archiveObserver) {
+							// Pull more data.
+							if (entries[0].isIntersecting) {
+								vue.infiniteScroll();
+							}
+
+							// Stop watching if we're done.
+							if (vue.infiniteDone === true) {
+								archiveObserver.unobserve(archiveObserverEl);
+								archiveObserverEl.parentNode.removeChild(archiveObserverEl);
+							}
+						}, { root: null, rootMargin: this.archive.offset + 'px', threshold: 1 });
+						archiveObserver.observe(archiveObserverEl);
+					}
+				}
+			}
+		});
+
 		/**
 		 * Infinite Scroll
 		 *
