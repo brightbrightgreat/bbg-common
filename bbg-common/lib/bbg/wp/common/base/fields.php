@@ -34,7 +34,7 @@ abstract class fields extends hook {
 	 */
 	public static function get_linkables() {
 
-		if(is_array(static::$linkables)) {
+		if (is_array(static::$linkables)) {
 			return apply_filters('bbg_common_linkables', static::$linkables);
 		}
 

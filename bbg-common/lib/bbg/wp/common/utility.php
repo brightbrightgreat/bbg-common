@@ -218,7 +218,7 @@ class utility {
 		$posts = array();
 		$strip = $prefix . 'related_';
 
-		if(!isset($args['related_type'])) {
+		if (!isset($args['related_type'])) {
 			$args['related_type'] = 'auto';
 		}
 

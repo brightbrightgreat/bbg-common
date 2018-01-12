@@ -49,6 +49,10 @@ module.exports = function(grunt) {
 						'src/js/custom/vue-methods.js',
 						'src/js/lib/vue-blob-forms.min.js'
 					],
+					// Our infinite scroll helper.
+					'js/vue-infinite.min.js': [
+						'src/js/custom/vue-infinite.js'
+					],
 					// Move blob-phone.
 					'js/blob-phone.min.js': [
 						'src/js/lib/blob-phone.min.js'
