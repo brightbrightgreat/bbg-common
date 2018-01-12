@@ -167,7 +167,7 @@ class hook extends base\hook {
 		// Bump this one thing to the top of the list.
 		array_unshift(static::$vue_deps, 'bbg-common-vue-deps-js');
 
-		// A phone number format helper. This conditionally enqueued
+		// A phone number format helper. This is conditionally enqueued
 		// because of its size. To turn it on, define the USE_PHONE_JS
 		// constant.
 		wp_register_script(
@@ -179,6 +179,20 @@ class hook extends base\hook {
 		);
 		if (defined('USE_PHONE_JS') && USE_PHONE_JS) {
 			static::$vue_deps[] = 'blob-phone-js';
+		}
+
+		// Infinite scroll helper. This is conditionally enqueued
+		// because it usually isn't needed. Define USE_INFINITE_JS
+		// somewhere to turn it on.
+		wp_register_script(
+			'bbg-common-infinite-js',
+			"{$js_url}vue-infinite.min.js",
+			array('bbg-common-vue-deps-js'),
+			static::ASSET_VERSION,
+			true
+		);
+		if (defined('USE_INFINITE_JS') && USE_INFINITE_JS) {
+			static::$vue_deps[] = 'bbg-common-infinite-js';
 		}
 
 		// Let's look for theme assets based on the current page.
