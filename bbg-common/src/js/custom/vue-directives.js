@@ -113,8 +113,8 @@
 		 *
 		 * @param callback $callback Callback function.
 		 */
-		Vue.directive('clickOutside', {
-			bind: function(el, binding, vNode) {
+		Vue.directive('click-outside', {
+			bind: function(el, binding, vnode) {
 				// Provided expression must evaluate to a function.
 				if (typeof binding.value !== 'function') {
 					console.warn('[v-click-outside:] provided expression "' + binding.expression + '" is not a function.');
@@ -125,7 +125,7 @@
 				var bubble = binding.modifiers.bubble,
 					handler = function(e) {
 						if (bubble || (!el.contains(e.target) && el !== e.target)) {
-							binding.value(e);
+							binding.value.call(vnode.context, e);
 						}
 					};
 
