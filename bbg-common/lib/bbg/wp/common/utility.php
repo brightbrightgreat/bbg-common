@@ -336,7 +336,7 @@ class utility {
 
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
-		if(!is_array($results) || !count($results)) {
+		if (!is_array($results) || !count($results)) {
 			return null;
 		}
 
@@ -347,7 +347,7 @@ class utility {
 		}
 
 		$terms = get_terms(array(
-			'include'=>$term_ids
+			'include'=>$term_ids,
 		));
 
 		return $terms;
