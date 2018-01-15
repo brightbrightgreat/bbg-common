@@ -32,12 +32,11 @@
 						out.push(value.name);
 					}
 
-					// Single-line addresses.
-					if (value.address) {
-						out.push(value.address);
-					}
-					// 2-line addresses.
-					else {
+					// 2-line addresses. This is the most common.
+					if (
+						(typeof value.address_1 !== 'undefined') &&
+						(typeof value.address_2 !== 'undefined')
+					) {
 						if (value.address_1) {
 							out.push(value.address_1);
 						}
@@ -46,7 +45,12 @@
 							out.push(value.address_2);
 						}
 					}
+					// Single-line addresses.
+					else if ((typeof value.address !== 'undefined') && value.address) {
+						out.push(value.address);
+					}
 
+					// Do city, state, and zip together.
 					if (value.city) {
 						tmp = [];
 						if (value.city) {
@@ -64,6 +68,7 @@
 						}
 					}
 
+					// For non-US countries, add the zip to the end.
 					if (value.country) {
 						out.push(value.country);
 
