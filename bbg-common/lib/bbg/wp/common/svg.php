@@ -17,7 +17,7 @@ use \blobfolio\common;
 class svg extends base\hook {
 	const ACTIONS = array(
 		'wp_footer'=>array(
-			'sprite'=>array('priority'=>PHP_INT_MAX),
+			'sprite'=>array('priority'=>9999),
 		),
 	);
 
