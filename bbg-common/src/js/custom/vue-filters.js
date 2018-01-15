@@ -32,12 +32,19 @@
 						out.push(value.name);
 					}
 
-					if (value.address_1) {
-						out.push(value.address_1);
+					// Single-line addresses.
+					if (value.address) {
+						out.push(value.address);
 					}
+					// 2-line addresses.
+					else {
+						if (value.address_1) {
+							out.push(value.address_1);
+						}
 
-					if (value.address_2) {
-						out.push(value.address_2);
+						if (value.address_2) {
+							out.push(value.address_2);
+						}
 					}
 
 					if (value.city) {
