@@ -10,6 +10,60 @@
 	BBGDirectiveVue.install = function(Vue, options){
 
 		/**
+		 * v-numbers-only
+		 *
+		 * For text fields that should only allow numeric inputs.
+		 */
+		Vue.directive('numbers-only', {
+			id: 'numbers-only',
+			priority: 999999,
+			/**
+			 * Element with this directive has fully landed in the DOM.
+			 *
+			 * @param DOMElement $el Element.
+			 * @param object $binding Vue data.
+			 * @param object $vnode Vue node.
+			 * @return void Nothing.
+			 */
+			bind: function(el, binding, vnode) {
+				// Parse the model's parent object.
+				var model = _getModelName(vnode);
+				model = ('vnode.context.' + model).split('.');
+				var modelKey = model.pop();
+				/* jshint ignore:start */
+				model = eval(model.join('.'));
+				/* jshint ignore:end */
+
+				// Bind to the input event.
+				el.addEventListener('input', function(){
+					// Delay any changes until nextTick to be safe.
+					Vue.nextTick(function(){
+						var value = el.value;
+						if (typeof value !== 'string') {
+							value = '';
+						}
+
+						value = value.replace(/[^\d]/g, '');
+						model[modelKey] = value;
+					});
+				});
+			},
+			inserted: function(el) {
+				// Try to force an onChange() whenever the element is
+				// inserted, just in case things start with a weird
+				// value.
+				if ('createEvent' in document) {
+					var evt = document.createEvent('HTMLEvents');
+					evt.initEvent('input', false, true);
+					el.dispatchEvent(evt);
+				}
+				else {
+					el.fireEvent('oninput');
+				}
+			}
+		});
+
+		/**
 		 * v-country
 		 *
 		 * For address forms with country-dependent state fields, we

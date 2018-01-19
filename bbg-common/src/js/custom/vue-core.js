@@ -69,19 +69,25 @@ var app = new Vue({
 		// Some WordPress-specific items we need to take care of.
 		wpClean: function() {
 			// makes it easier to tell where images are in WYSIWYG content
-			document.querySelectorAll('.t_wysiwyg img:not(.wp-smiley):not(.emoji):not(.alignleft):not(.alignright):not(.aligncenter)').forEach(function(v,k){
-				var parent = v.parentNode;
+			var all = document.querySelectorAll('.t_wysiwyg img:not(.wp-smiley):not(.emoji):not(.alignleft):not(.alignright):not(.aligncenter)');
 
-				if(!parent.classList.contains('alignleft') && !parent.classList.contains('alignright') && !parent.classList.contains('aligncenter') && parent.tagName !== 'PICTURE' ) {
-					parent.classList.add('has-img');
-				}
-			});
+			if(all.length) {
+				all.forEach(function(v,k){
+					var parent = v.parentNode;
+
+					if(!parent.classList.contains('alignleft') && !parent.classList.contains('alignright') && !parent.classList.contains('aligncenter') && parent.tagName !== 'PICTURE' ) {
+						parent.classList.add('has-img');
+					}
+				});
+			}
 
 			var iframes = document.querySelectorAll('iframe');
 
-			iframes.forEach(function(v,k){
-				v.parentNode.classList.add('has-embed');
-			});
+			if(iframes.length) {
+				iframes.forEach(function(v,k){
+					v.parentNode.classList.add('has-embed');
+				});
+			}
 		},
 
 		fitVids: function(scope) {
