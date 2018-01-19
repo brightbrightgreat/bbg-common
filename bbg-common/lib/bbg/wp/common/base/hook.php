@@ -17,7 +17,7 @@ use \blobfolio\common;
 abstract class hook {
 	// Cache-breaking string.
 
-	const ASSET_VERSION = '0.7.1';
+	const ASSET_VERSION = '0.7.2';
 
 	// Default arguments for actions.
 	const ACTION_OPTIONS = array(
