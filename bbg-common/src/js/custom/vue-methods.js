@@ -515,6 +515,40 @@
 			this.menu = '';
 		};
 
+		/**
+		 * Slide In
+		 *
+		 * Uses blobslide to slide in an element.
+		 *
+		 * @return void Nothing.
+		 */
+		Vue.prototype.vSlideIn = function(el) {
+			Vue.nextTick(function(){
+				blobSlide.vslide(el, {
+					duration: 500,
+					transition: 'ease',
+					force: 'show',
+				});
+			});
+		};
+
+		/**
+		 * Slide Out
+		 *
+		 * Uses blobslide to slide out an element.
+		 *
+		 * @return void Nothing.
+		 */
+		Vue.prototype.vSlideOut = function(el) {
+			Vue.nextTick(function(){
+				blobSlide.vslide(el, {
+					duration: 500,
+					transition: 'ease',
+					force: 'hide',
+				});
+			});
+		};
+
 		Vue.prototype.socialShare = function(url) {
 			var
 			windowFeatures,
