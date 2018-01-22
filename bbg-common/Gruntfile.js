@@ -20,6 +20,7 @@ module.exports = function(grunt) {
 					'js/lib.min.js': [
 						'src/js/lib/blobject-fit.min.js',
 						'src/js/lib/blobselect.min.js',
+						'src/js/lib/blob-slide.min.js',
 						'src/js/lib/debounce.js',
 						'src/js/lib/fecha.min.js',
 						'src/js/lib/intersect-observer.js',

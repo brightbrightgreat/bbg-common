@@ -520,13 +520,19 @@
 		 *
 		 * Uses blobslide to slide in an element.
 		 *
+		 * @param DOMElement $el Element.
 		 * @return void Nothing.
 		 */
 		Vue.prototype.vSlideIn = function(el) {
+			var duration = parseInt(el.getAttribute('data-blobslide-duration'), 10) || 500,
+				transition = el.getAttribute('data-blobslide-transition') || 'ease',
+				type = el.getAttribute('data-blobslide-type') || 'block';
+
 			Vue.nextTick(function(){
 				blobSlide.vslide(el, {
-					duration: 500,
-					transition: 'ease',
+					duration: duration,
+					transition: transition,
+					type: type,
 					force: 'show',
 				});
 			});
@@ -537,13 +543,19 @@
 		 *
 		 * Uses blobslide to slide out an element.
 		 *
+		 * @param DOMElement $el Element.
 		 * @return void Nothing.
 		 */
 		Vue.prototype.vSlideOut = function(el) {
+			var duration = parseInt(el.getAttribute('data-blobslide-duration'), 10) || 500,
+				transition = el.getAttribute('data-blobslide-transition') || 'ease',
+				type = el.getAttribute('data-blobslide-type') || 'block';
+
 			Vue.nextTick(function(){
 				blobSlide.vslide(el, {
-					duration: 500,
-					transition: 'ease',
+					duration: duration,
+					transition: transition,
+					type: type,
 					force: 'hide',
 				});
 			});
