@@ -196,15 +196,6 @@
 			}
 		});
 
-		Vue.directive('wysiwyg', function(){
-			id: 'wysiwyg',
-			priority: 5000,
-			inserted: function(el, binding, vnode) {
-				vnode.context.wpClean();
-				vnode.context.fitVids();
-			}
-		});
-
 		/**
 		 * Get Model Name
 		 *
