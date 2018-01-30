@@ -53,6 +53,9 @@ class hook extends base\hook {
 		'jpeg_quality'=>array(
 			'jpeg_quality'=>null,
 		),
+		'the_content'=>array(
+			'instagram_embed'=>array('priority'=>9999),
+		),
 	);
 
 	protected static $gtm;
@@ -157,6 +160,15 @@ class hook extends base\hook {
 			true
 		);
 		wp_enqueue_script('bbg-common-plugins-js');
+
+		// Miscellaneous Instagram embed nonsense.
+		wp_register_script(
+			'instagram-embed-js',
+			'https://platform.instagram.com/en_US/embeds.js',
+			array(),
+			static::ASSET_VERSION,
+			true
+		);
 
 		// Our main Vue bundle.
 		$vue = BBG_TESTMODE ? "{$js_url}vue-testmode.min.js" : "{$js_url}vue.min.js";
@@ -621,4 +633,32 @@ class hook extends base\hook {
 	}
 
 	// ----------------------------------------------------------------- end gtm
+
+
+
+	// -----------------------------------------------------------------
+	// Misc
+	// -----------------------------------------------------------------
+
+	/**
+	 * Instagram Embed
+	 *
+	 * The automatic Instagram embed helpers unhelpfully add a <script>
+	 * into the middle of the content. We want to push that elsewhere.
+	 *
+	 * @param string $content Content.
+	 * @return string Content.
+	 */
+	public static function instagram_embed($content) {
+		if (false !== strpos($content, '<p><script async defer src="//platform.instagram.com/en_US/embeds.js"></script></p>')) {
+			$content = str_replace('<p><script async defer src="//platform.instagram.com/en_US/embeds.js"></script></p>', '', $content);
+
+			// And enqueue the script.
+			wp_enqueue_script('instagram-embed-js');
+		}
+
+		return $content;
+	}
+
+	// -----------------------------------------------------------------
 }

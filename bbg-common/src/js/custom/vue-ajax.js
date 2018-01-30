@@ -68,7 +68,7 @@
 			return this.formAjax(action, formData, function(r){
 				vue.formPostSubmit(form);
 				if(typeof callback === 'function'){
-					callback(r);
+					callback.call(vue, r);
 				}
 			});
 		};
@@ -111,7 +111,8 @@
 		 * @return void Nothing.
 		 */
 		Vue.prototype.formAjax = function(action, data, callback, method){
-			var ajax;
+			var ajax,
+				vue = this;
 
 			// Append session info to the request.
 			data.n = this.session.n;
@@ -130,14 +131,14 @@
 				function(r){
 					r = this.formResponse(r);
 					if(typeof callback === 'function'){
-						callback(r);
+						callback.call(vue, r);
 					}
 					return true;
 				},
 				function(r){
 					r = this.formResponse(r);
 					if(typeof callback === 'function'){
-						callback(r);
+						callback.call(vue, r);
 					}
 					return true;
 				}
