@@ -205,6 +205,12 @@ abstract class ajax {
 	 * @return string Value.
 	 */
 	public static function get_soft_nonce() {
+		// Logged in users can always get an up-to-date nonce.
+		if (is_user_logged_in()) {
+			return static::get_nonce();
+		}
+
+		// For others, we'll just trust the cookie, if present.
 		return isset($_COOKIE[static::NONCE_COOKIE]) ? $_COOKIE[static::NONCE_COOKIE] : '';
 	}
 
