@@ -57,6 +57,7 @@
 
 			// Recheck form for errors.
 			if(true !== this.validateForm(formName)){
+				this.gotoError();
 				return false;
 			}
 
