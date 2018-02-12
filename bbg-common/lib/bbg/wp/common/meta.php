@@ -56,6 +56,7 @@ class meta extends base\hook {
 		global $post;
 
 		$title = '';
+		$ogt = carbon_get_post_meta($post->ID, 'og_title');
 
 		if ($post) {
 			$post_type = get_post_type_object($post->post_type);
@@ -64,40 +65,22 @@ class meta extends base\hook {
 		// First, are we getting this title for a single item, either
 		// on a single- page, or in a loop context.
 		if ($loop || (is_singular() && !is_front_page())) {
-			// Try OpenGraph first.
-			$title = ($og ? carbon_get_post_meta($post->ID, 'og_title') : '');
-
-			// Try the hero headline next.
-			if (!$title) {
-				$title = carbon_get_post_meta($post->ID, 'hero_headline');
-
-				// As a last resort, grab the post's title.
-				if (!$title) {
-					$title = $post->post_title;
-				}
-			}
+			$title = $post->post_title;
 		}
 
 		// Otherwise we're dealing with an archive page of some sort.
 		// Front page.
 		elseif (is_front_page()) {
 			$p = get_page(get_option('page_on_front', true));
-
-			// Try OpenGraph first.
-			$title = ($og ? carbon_get_post_meta($p->ID, 'og_title') : $title);
+			$title = $p->post_title;
+			$ogt = carbon_get_post_meta($p->ID, 'og_title');
 		}
 
 		// Home.
 		elseif (is_home()) {
 			$p = get_page(get_option('page_for_posts', true));
-
-			// Try OpenGraph first.
-			$title = ($og ? carbon_get_post_meta($p->ID, 'og_title') : $title);
-
-			// Or the post title.
-			if (!$title) {
-				$title = $p->post_title;
-			}
+			$title = $p->post_title;
+			$ogt = carbon_get_post_meta($p->ID, 'og_title');
 		}
 
 		// Taxonomy.
@@ -129,18 +112,22 @@ class meta extends base\hook {
 			$archive = get_page_by_path($key, OBJECT);
 
 			if ($archive) {
-				// Try OpenGraph first.
-				$title = ($og ? carbon_get_post_meta($archive->ID, 'og_title') : $title);
-
-				// Or the post title.
-				if (!$title) {
-					$title = $archive->post_title;
-				}
+				$ogt = carbon_get_post_meta($archive->ID, 'og_title');
+				$title = $archive->post_title;
 			}
 
 			if (!$title) {
 				$title = $post_type->label;
 			}
+		}
+
+		// Let's give ourselves a chance to override,
+		// Before the final OG overrides.
+		$title = apply_filters('bbg_common_meta_title_pre', $title);
+
+		// If we have $ogt and we're here for OG.
+		if ($ogt && $og) {
+			$title = $ogt;
 		}
 
 		// Still no title but we're here for og?
@@ -150,7 +137,7 @@ class meta extends base\hook {
 		}
 
 		// If we still do not have a title, just use the site's name.
-		if (!$title) {
+		if (!$title && $og) {
 			$title = get_bloginfo('name');
 		}
 
@@ -251,7 +238,7 @@ class meta extends base\hook {
 
 		// If we have OG overrides, and we're here for OG,
 		// Apply them now.
-		if($ogd && $og) {
+		if ($ogd && $og) {
 			$description = $ogd;
 		}
 
@@ -293,21 +280,19 @@ class meta extends base\hook {
 		global $post;
 
 		$featured = 0;
+		$ogi = carbon_get_post_meta($post->ID, 'og_image');
+
 		if ($loop || is_singular()) {
-			// If we're doing this for OG, get the OG image.
-			if ($og) {
-				$featured = (int) carbon_get_post_meta($post->ID, 'og_image');
-			}
+			$featured = (int) get_post_thumbnail_id($post->ID);
+		}
 
-			// If no specific og image, look for featured image.
-			if (!$featured) {
-				$featured = (int) get_post_thumbnail_id($post->ID);
+		// Give ourselves the opportunity to override,
+		// Before the final OG override.
+		$featured = (int) apply_filters('bbg_common_meta_image_pre', $featured);
 
-				// Last try the hero image.
-				if (!$featured) {
-					$featured = (int) carbon_get_post_meta($post->ID, 'hero_background_image');
-				}
-			}
+		// If we have an OG image, use that.
+		if ($ogi && $og) {
+			$featured = $ogi;
 		}
 
 		// If no featured image, look for the site-wide fallback og
