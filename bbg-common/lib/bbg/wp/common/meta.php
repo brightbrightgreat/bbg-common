@@ -186,22 +186,13 @@ class meta extends base\hook {
 
 		$description = '';
 		$post_type = $post->post_type;
+		$ogd = carbon_get_post_meta($post->ID, 'og_description');
 
 		// First, are we getting this description for a single item,
 		// either on a single- page, or in a loop context.
 		if ($loop || is_singular()) {
-			// Try OpenGraph first.
-			$description = ($og ? carbon_get_post_meta($post->ID, 'og_description') : '');
-
-			// Try the content next.
-			if (!$description) {
-				$description = $post->post_content;
-
-				// As a last resort, grab the hero description.
-				if (!$description) {
-					$description = carbon_get_post_meta($post->ID, 'hero_text');
-				}
-			}
+			// Try the content first.
+			$description = $post->post_content;
 		}
 
 		// Otherwise we're dealing with an archive page of some sort.
@@ -209,14 +200,9 @@ class meta extends base\hook {
 		// Home.
 		elseif (is_home()) {
 			$p = get_post(get_option('page_for_posts', true));
-
-			// Try OpenGraph first.
-			$description = ($og ? carbon_get_post_meta($p->ID, 'og_description') : $description);
-
-			// Or just page content.
-			if (!$description) {
-				$description = $p->post_content;
-			}
+			$ogd = carbon_get_post_meta($p->ID, 'og_description');
+			// Try the page description.
+			$description = $p->post_content;
 		}
 
 		// Taxonomy.
@@ -246,21 +232,27 @@ class meta extends base\hook {
 			$post_type = get_post_type_object($post->post_type);
 			$key = ($post_type->rewrite ? $post_type->rewrite['slug'] : $post_type->name);
 			$archive = get_page_by_path($key, OBJECT);
+			$ogd = carbon_get_post_meta($archive->ID, 'og_description');
 
 			if ($archive) {
-				// Try OpenGraph first.
-				$description = ($og ? carbon_get_post_meta($archive->ID, 'og_description') : $description);
-
-				// Or the post content.
-				if (!$description) {
-					$description = $archive->post_content;
-				}
+				// Try the post content.
+				$description = $archive->post_content;
 			}
 
 			// Still no description?
 			if (!$description) {
 				$description = $post_type->description;
 			}
+		}
+
+		// Give ourselves an opportunity to override the description,
+		// Without overriding the OG overrides.
+		$description = apply_filters('bbg_common_meta_description_pre', $description);
+
+		// If we have OG overrides, and we're here for OG,
+		// Apply them now.
+		if($ogd && $og) {
+			$description = $ogd;
 		}
 
 		// Still no title but we're here for og?
