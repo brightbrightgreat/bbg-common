@@ -411,24 +411,35 @@
 		 *
 		 * Smooth scroll to the first error on the page.
 		 *
-		 * @param string $hash Hash.
 		 * @return void Location.
 		 */
 		Vue.prototype.gotoError = function () {
 			var vue = this;
-			Vue.nextTick(function () {
-				var field,
-					classes = ['error','error-message','is-invalid'],
-					found = false;
+			Vue.nextTick(function() {
+				var classes = ['error','error-message','is-invalid'],
+					offset = 170,
+					main = document.querySelector('main');
 
-				classes.forEach(function (v) {
-					if (!found && false !== (field = vue.first('.' + v))) {
-						found = true;
-						smoothScroll.animateScroll(field);
+				// If the page has a <main> element, use it to find an
+				// appropriate offset (for working around e.g. sticky
+				// headers).
+				if (main) {
+					var style = window.getComputedStyle(main);
+					offset = parseInt(style.getPropertyValue('margin-top')) || 0;
+					offset += 30;
+				}
+
+				// Check for matches in order and scroll to the first we
+				// find!
+				for (var i=0; i<classes.length; i++) {
+					var field = vue.first('.' + classes[i]);
+					if (field) {
+						smoothScroll.animateScroll(field.parentNode, null, {offset: offset});
+						return true;
 					}
-				});
+				}
 
-				return found;
+				return false;
 			});
 		};
 
