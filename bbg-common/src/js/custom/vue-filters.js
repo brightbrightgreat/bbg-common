@@ -16,7 +16,9 @@
 					value = value + '';
 					value = value.replace(/[^\d\.]/g, '');
 					value = Number(value) || 0;
-					return '$' + value.toFixed(2);
+					value = value.toFixed(2);
+					value = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					return '$' + value;
 				},
 
 				// Format an address.

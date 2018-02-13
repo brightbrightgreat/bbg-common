@@ -248,9 +248,10 @@
 				vue.session.ajaxurl,
 				{action : 'bbg_common_ajax_heartbeat'},
 				function (r) {
+					Cookies.set('bbg_common_n_checked', 1);
 					setTimeout(function () {
 						vue.heartbeat(vue);
-					}, 1800000);
+					}, 600000);
 					return true;
 				}
 			);

@@ -139,7 +139,7 @@ abstract class blobject {
 					r_cast::bool($args, true);
 
 					if ($args) {
-						return v_format::money($value, false, '', true);
+						return v_format::money($value, false, ',', false);
 					}
 				}
 
