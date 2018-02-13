@@ -34,7 +34,8 @@ var app = new Vue({
 
 			// Make sure we have a nonce.
 			this.session.n = Cookies.get('bbg_common_n') || '';
-			if(!this.session.n) {
+			this.session.n_checked = !!Cookies.get('bbg_common_n_checked');
+			if(!this.session.n || !this.session.n_checked) {
 				vue.heartbeat(vue);
 			}
 			else {
@@ -65,7 +66,6 @@ var app = new Vue({
 
 			this.onScroll();
 		}, 100),
-
 
 		// Some WordPress-specific items we need to take care of.
 		wpClean: function() {
