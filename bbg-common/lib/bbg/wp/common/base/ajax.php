@@ -205,8 +205,9 @@ abstract class ajax {
 	 * @return string Value.
 	 */
 	public static function get_soft_nonce() {
-		// Logged in users can always get an up-to-date nonce.
-		if (is_user_logged_in()) {
+		// Logged in users can always get an up-to-date nonce; if we
+		// aren't using static cache, everyone can get a fresh nonce!
+		if (is_user_logged_in() || !defined('BLOBCACHE') || !BLOBCACHE) {
 			return static::get_nonce();
 		}
 
