@@ -40,7 +40,7 @@ var app = new Vue({
 			else {
 				setTimeout(function() {
 					vue.heartbeat(vue);
-				}, 1800000);
+				}, 600000);
 			}
 
 			// Wp Clean.

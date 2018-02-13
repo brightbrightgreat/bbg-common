@@ -250,7 +250,7 @@
 				function (r) {
 					setTimeout(function () {
 						vue.heartbeat(vue);
-					}, 1800000);
+					}, 600000);
 					return true;
 				}
 			);
