@@ -93,6 +93,18 @@ class hook extends base\hook {
 		remove_filter('the_excerpt', 'convert_chars');
 		remove_filter('the_title', 'wptexturize');
 		remove_filter('the_title', 'convert_chars');
+
+		// WP Nonce gets a bit janky as users log in or out. If
+		// caching isn't an issue, let's just always fix it.
+		$ajax_base = BBGCOMMON_BASE_CLASS . 'base\\ajax';
+		if (is_user_logged_in() || !defined('BLOBCACHE') || !BLOBCACHE) {
+			add_action('init', array($ajax_base, 'set_nonce'));
+		}
+
+		// Login and logout changes the formula, so make sure we
+		// rerun.
+		add_action('wp_login', array($ajax_base, 'set_nonce'));
+		add_action('wp_logout', array($ajax_base, 'set_nonce'));
 	}
 
 
