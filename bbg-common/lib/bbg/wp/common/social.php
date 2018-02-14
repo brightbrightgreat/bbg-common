@@ -144,9 +144,6 @@ class social {
 				urlencode($via)
 			);
 
-			// One last sanitization pass to make sure it is well-formed.
-			r_sanitize::url($url);
-
 			// Return or cry.
 			return $url ? $url : false;
 		}
