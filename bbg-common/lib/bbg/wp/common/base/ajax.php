@@ -168,6 +168,16 @@ abstract class ajax {
 	}
 
 	/**
+	 * Set Nonce
+	 *
+	 * This is mostly an action wrapper for ::get_nonce(), removing
+	 * issues with the first parameter.
+	 */
+	public static function set_nonce() {
+		return static::get_nonce();
+	}
+
+	/**
 	 * Get Nonce
 	 *
 	 * All forms use a global Nonce. The value will vary from user to
@@ -176,20 +186,22 @@ abstract class ajax {
 	 * @param bool $save Save it.
 	 * @return string Nonce.
 	 */
-	public static function get_nonce($save=true) {
+	public static function get_nonce(bool $save=true) {
 		$nonce = wp_create_nonce(static::NONCE_SALT);
 
 		// Store it in a cookie if we're saving.
 		if ($save) {
-			@setcookie(
-				static::NONCE_COOKIE,
-				$nonce,
-				0,
-				COOKIEPATH,
-				COOKIE_DOMAIN,
-				is_ssl(),
-				false
-			);
+			if (!@headers_sent()) {
+				@setcookie(
+					static::NONCE_COOKIE,
+					$nonce,
+					0,
+					COOKIEPATH,
+					COOKIE_DOMAIN,
+					is_ssl(),
+					false
+				);
+			}
 			$_COOKIE[static::NONCE_COOKIE] = $nonce;
 		}
 
