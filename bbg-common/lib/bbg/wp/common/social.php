@@ -138,9 +138,9 @@ class social {
 			$url = sprintf(
 				static::SHARING_NETWORKS[$network],
 				urlencode($permalink),
-				$title,
+				esc_attr($title),
 				urlencode($image),
-				$excerpt,
+				esc_attr($excerpt),
 				urlencode($via)
 			);
 
