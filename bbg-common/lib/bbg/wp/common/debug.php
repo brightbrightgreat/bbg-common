@@ -176,10 +176,10 @@ class debug {
 			$message
 		);
 
+		$num = -1;
 		if (count($trace)) {
 			$out .= "\nStack trace:";
 
-			$num = -1;
 			foreach ($trace as $v) {
 				$num++;
 
@@ -191,6 +191,19 @@ class debug {
 					$v['file']
 				));
 			}
+		}
+
+		if (isset($_SERVER['REQUEST_URI'])) {
+			global $template;
+			$num++;
+
+			$out .= "\n" . trim(sprintf(
+				static::TEMPLATE_TRACE,
+				$num,
+				$template,
+				0,
+				$_SERVER['REQUEST_URI']
+			));
 		}
 
 		// Log to bbg-debug.log.
