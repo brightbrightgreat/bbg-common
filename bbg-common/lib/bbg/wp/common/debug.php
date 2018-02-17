@@ -29,6 +29,7 @@ class debug {
 	);
 
 	const TEMPLATE = '%s: %s';
+	const TEMPLATE_ENV = "\n# %s: %s";
 	const TEMPLATE_TRACE = "\n# %d\n# %s() on line %d in %s";
 
 
@@ -176,10 +177,29 @@ class debug {
 			$message
 		);
 
-		$num = -1;
+		// Mention the URI.
+		if (isset($_SERVER['REQUEST_URI'])) {
+			$out .= sprintf(
+				static::TEMPLATE_ENV,
+				'URI',
+				$_SERVER['REQUEST_URI']
+			);
+		}
+
+		// Mention the template.
+		global $template;
+		if (is_string($template) && $template) {
+			$out .= sprintf(
+				static::TEMPLATE_ENV,
+				'Template',
+				str_replace(WP_CONTENT_DIR, '', $template)
+			);
+		}
+
 		if (count($trace)) {
 			$out .= "\nStack trace:";
 
+			$num = -1;
 			foreach ($trace as $v) {
 				$num++;
 
@@ -191,19 +211,6 @@ class debug {
 					$v['file']
 				));
 			}
-		}
-
-		if (isset($_SERVER['REQUEST_URI'])) {
-			global $template;
-			$num++;
-
-			$out .= "\n" . trim(sprintf(
-				static::TEMPLATE_TRACE,
-				$num,
-				$template,
-				0,
-				$_SERVER['REQUEST_URI']
-			));
 		}
 
 		// Log to bbg-debug.log.
