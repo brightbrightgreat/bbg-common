@@ -137,7 +137,8 @@ class fields extends base\fields {
 			'Google Tag Manager',
 			array(
 				Field::make('text', 'gtm', 'ID')
-				->set_attribute('placeholder', 'GTM-#######'),
+				->set_attribute('placeholder', 'GTM-#######')
+				->set_help_text("To keep stats honest, GTM tracking code is not added to pages viewed by WP users or under staging environments. To override this, append <code>?gtm</code> to the URL, or add <code>define('BBG_COMMON_GTM', true)</code> to the code."),
 			)
 		);
 	}
