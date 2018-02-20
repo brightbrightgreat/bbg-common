@@ -542,7 +542,11 @@ class hook extends base\hook {
 
 		if (
 			static::$gtm &&
-			((!BBG_TESTMODE && !is_user_logged_in()) || isset($_GET['gtm']))
+			(
+				isset($_GET['gtm']) ||
+				(defined('BBG_COMMON_GTM') && BBG_COMMON_GTM) ||
+				(!BBG_TESTMODE && !is_user_logged_in())
+			)
 		) {
 			return static::$gtm;
 		}
