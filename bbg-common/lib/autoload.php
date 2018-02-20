@@ -144,7 +144,8 @@ spl_autoload_register(
                 'bbg\\wp\\common\\svg' => '/bbg/wp/common/svg.php',
                 'bbg\\wp\\common\\typetax' => '/bbg/wp/common/typetax.php',
                 'bbg\\wp\\common\\upgrade' => '/bbg/wp/common/upgrade.php',
-                'bbg\\wp\\common\\utility' => '/bbg/wp/common/utility.php'
+                'bbg\\wp\\common\\utility' => '/bbg/wp/common/utility.php',
+								'bbg\\wp\\common\\terms' => '/bbg/wp/common/terms.php'
             );
         }
         if (isset($classes[$class])) {
