@@ -142,10 +142,10 @@ spl_autoload_register(
                 'bbg\\wp\\common\\newsletter' => '/bbg/wp/common/newsletter.php',
                 'bbg\\wp\\common\\social' => '/bbg/wp/common/social.php',
                 'bbg\\wp\\common\\svg' => '/bbg/wp/common/svg.php',
+                'bbg\\wp\\common\\terms' => '/bbg/wp/common/terms.php',
                 'bbg\\wp\\common\\typetax' => '/bbg/wp/common/typetax.php',
                 'bbg\\wp\\common\\upgrade' => '/bbg/wp/common/upgrade.php',
-                'bbg\\wp\\common\\utility' => '/bbg/wp/common/utility.php',
-								'bbg\\wp\\common\\terms' => '/bbg/wp/common/terms.php'
+                'bbg\\wp\\common\\utility' => '/bbg/wp/common/utility.php'
             );
         }
         if (isset($classes[$class])) {
