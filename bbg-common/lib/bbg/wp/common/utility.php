@@ -296,61 +296,13 @@ class utility {
 
 	/**
 	 * Get Terms by Post Type
-	 *
-	 * When getting terms using `get_terms()`, the argument `hide_empty`
-	 * only excludes terms that are empty across all post types
-	 * that share the taxonomy.
-	 *
-	 * This function allows you to get a list of terms that
-	 * excludes empty terms for a specific post type.
-	 * You can also use it to get terms from multiple taxonomies at once.
-	 *
-	 * Example: Both `product` and `inspiration` share the taxonomy `color`.
-	 * The term `blue` is currently being used by an inspiration, but no book uses it yet.
-	 * Using `get_terms_by_post_type(array('taxonomies'=>'color', 'post_types'=>'book'))` will return an array without `blue` in it,
-	 * While `get_terms(array('taxonomy'=>'color','hide_empty'=>true))` will retun an array that includes `blue`.
+	 * Alias for terms::get_terms_by_post_type().
 	 *
 	 * @param array $args The arguments passed to the function.
 	 * @return mixed $results Array or null.
 	 */
 	public static function get_terms_by_post_type( array $args ) {
-
-		// Make sure that our taxonomies and post types exist and that the variables are arrays.
-		// If not, get out.
-		if (!isset($args['taxonomies']) || !isset($args['post_types']) || !is_array($args['taxonomies']) || !is_array($args['post_types'])) {
-			return false;
-		}
-
-		global $wpdb;
-
-		$query = $wpdb->prepare(
-			"SELECT t.term_id from $wpdb->terms AS t
-				INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id
-				INNER JOIN $wpdb->term_relationships AS r ON r.term_taxonomy_id = tt.term_taxonomy_id
-				INNER JOIN $wpdb->posts AS p ON p.ID = r.object_id
-				WHERE p.post_type IN('%s') AND tt.taxonomy IN('%s')
-				GROUP BY t.term_id",
-			join( "', '", $args['post_types'] ),
-			join( "', '", $args['taxonomies'] )
-		);
-
-		$results = $wpdb->get_results( $query, ARRAY_A );
-
-		if (!is_array($results) || !count($results)) {
-			return null;
-		}
-
-		$term_ids = array();
-
-		foreach ($results as $row) {
-			$term_ids[] = (int) $row['term_id'];
-		}
-
-		$terms = get_terms(array(
-			'include'=>$term_ids,
-		));
-
-		return $terms;
-
+		return \bbg\wp\common\terms::get_terms_by_post_type($args);
 	}
+
 }
