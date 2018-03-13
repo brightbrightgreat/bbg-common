@@ -297,6 +297,7 @@ class utility {
 	/**
 	 * Get Terms by Post Type
 	 * Alias for terms::get_terms_by_post_type().
+	 *
 	 * @param array $args The arguments passed to the function.
 	 * @return mixed $results Array or null.
 	 */

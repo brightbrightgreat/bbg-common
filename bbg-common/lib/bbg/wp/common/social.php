@@ -49,7 +49,7 @@ class social {
 	protected static $social;
 
 
-		/**
+	/**
 	 * Social URLs.
 	 *
 	 * Pull social network URLs from ACF. This is
