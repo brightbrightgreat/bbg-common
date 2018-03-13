@@ -49,7 +49,7 @@ class social {
 	protected static $social;
 
 
-	/**
+		/**
 	 * Social URLs.
 	 *
 	 * Pull social network URLs from ACF. This is
@@ -65,11 +65,8 @@ class social {
 		if (!is_array(static::$social)) {
 			static::$social = array();
 
-			// Set our order appropriately.
-			$networks = (count($order) ? $order : static::SOCIAL_NETWORKS);
-
 			// Loop through networks in the order specified.
-			foreach ($networks as $v) {
+			foreach (static::SOCIAL_NETWORKS as $v) {
 				static::$social[$v] = carbon_get_theme_option('social_' . $v);
 				r_sanitize::url(static::$social[$v]);
 				if (!static::$social[$v]) {
@@ -78,8 +75,22 @@ class social {
 			}
 		}
 
+		// Return a single network?
 		if (!is_null($network)) {
 			return array_key_exists($network, static::$social) ? static::$social[$network] : false;
+		}
+
+		// Return specific networks?
+		if (is_array($order) && count($order)) {
+			$out = array();
+
+			foreach ($order as $v) {
+				if (isset(static::$social[$v])) {
+					$out[$v] = static::$social[$v];
+				}
+			}
+
+			return $out;
 		}
 
 		return static::$social;
