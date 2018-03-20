@@ -111,7 +111,7 @@ class terms {
 			),
 		));
 
-		// No posts,
+		// No posts.
 		if (!is_array($posts) || !count($posts)) {
 			return $out;
 		}
