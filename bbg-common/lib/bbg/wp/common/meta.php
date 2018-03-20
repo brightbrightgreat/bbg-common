@@ -72,7 +72,7 @@ class meta extends base\hook {
 		// Front page.
 		elseif (is_front_page()) {
 			$p = get_page(get_option('page_on_front', true));
-			$title = $p->post_title;
+			$title = get_bloginfo('site_name');
 			$ogt = carbon_get_post_meta($p->ID, 'og_title');
 		}
 
