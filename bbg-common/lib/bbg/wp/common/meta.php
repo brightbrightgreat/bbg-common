@@ -177,12 +177,18 @@ class meta extends base\hook {
 
 		// First, are we getting this description for a single item,
 		// either on a single- page, or in a loop context.
-		if ($loop || is_singular()) {
+		if ($loop || (is_singular() && !is_front_page())) {
 			// Try the content first.
 			$description = $post->post_content;
 		}
 
 		// Otherwise we're dealing with an archive page of some sort.
+		// Front page.
+		elseif (is_front_page()) {
+			$p = get_post(get_option('page_on_front', true));
+			$description = $p->post_content;
+			$ogd = carbon_get_post_meta($p->ID, 'og_description');
+		}
 
 		// Home.
 		elseif (is_home()) {
@@ -424,6 +430,11 @@ class meta extends base\hook {
 		$out['og:description'] = array(
 			'property'=>'og:description',
 			'name'=>'twitter:description',
+			'content'=>$description,
+		);
+
+		$out['description'] = array(
+			'name'=>'description',
 			'content'=>$description,
 		);
 
