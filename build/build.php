@@ -280,7 +280,7 @@ if ($handle = fopen ("php://stdin","r")) {
 		$file = json_decode($file, true);
 		$file['Version'] = $version;
 		$file = json_encode($file, JSON_PRETTY_PRINT);
-		file_put_contents(RELEASE_DIR . 'bbg-common.json');
+		file_put_contents(RELEASE_DIR . 'bbg-common.json', $file);
 
 		// Copy files to working directory.
 		report('Copying source…', 'bullet');
