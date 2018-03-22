@@ -173,6 +173,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('php', ['blobphp:check']);
 	grunt.registerTask('default', ['javascript', 'php']);
 	grunt.registerTask('javascript', ['jshint', 'uglify', 'compress:js']);
+	grunt.registerTask('build', ['clean', 'javascript']);
 	grunt.event.on('watch', function(action, filepath, target) {
 		grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
 	});

@@ -1,11 +1,11 @@
 {
-  "Name": "bbg-common",
-  "Version": "0.8.0",
-  "DownloadURI": "https:\/\/brightbrightgreat.com\/repo\/bbg-common.zip",
-  "Requires": "4.5",
-  "Tested": "4.9",
-  "License": "WTFPL",
-  "First": "2017-10-01",
-  "Home": "https:\/\/github.com\/brightbrightgreat\/bbg-common",
-  "About": ""
+    "Name": "bbg-common",
+    "Version": "0.8.1",
+    "DownloadURI": "https:\/\/brightbrightgreat.com\/repo\/bbg-common.zip",
+    "Requires": "4.5",
+    "Tested": "4.9",
+    "License": "WTFPL",
+    "First": "2017-10-01",
+    "Home": "https:\/\/github.com\/brightbrightgreat\/bbg-common",
+    "About": ""
 }
