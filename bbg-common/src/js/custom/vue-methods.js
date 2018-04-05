@@ -543,7 +543,7 @@
 				blobSlide.vslide(el, {
 					duration: duration,
 					transition: transition,
-					type: type,
+					display: type,
 					force: 'show',
 				});
 			});
@@ -566,7 +566,7 @@
 				blobSlide.vslide(el, {
 					duration: duration,
 					transition: transition,
-					type: type,
+					display: type,
 					force: 'hide',
 				});
 			});

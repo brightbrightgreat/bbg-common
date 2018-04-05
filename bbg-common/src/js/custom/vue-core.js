@@ -118,8 +118,8 @@ var app = new Vue({
 			for (var i=0; i<iframes.length; i++) {
 				var parent = iframes[i].parentNode,
 					offset = this.offset(iframes[i]),
-					width = offset.width,
-					height = offset.height,
+					width = parseInt(iframes[i].getAttribute('width')) || offset.width,
+					height = parseInt(iframes[i].getAttribute('height')) || offset.height,
 					aspectRatio = height / width,
 					padding = aspectRatio * 100 + '%';
 
