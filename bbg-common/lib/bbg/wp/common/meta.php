@@ -265,7 +265,7 @@ class meta extends base\hook {
 
 		// Let's format what we have.
 		r_sanitize::whitespace($description);
-		$title = apply_filters('the_content', $description);
+		$description = strip_shortcodes($description);
 		r_format::decode_entities($description);
 
 		// And send it on its way.
