@@ -150,6 +150,11 @@ class fields extends base\fields {
 	 * @return void Nothing.
 	 */
 	public static function mailchimp() {
+		// Allow themes to handle this themselves.
+		if (defined('NO_MAILCHIMP') && NO_MAILCHIMP) {
+			return;
+		}
+
 		Container::make('theme_options', 'MailChimp')
 		->set_page_file('site-mailchimp')
 		->set_icon('dashicons-email-alt')

@@ -39,6 +39,14 @@ class newsletter {
 	 * @return bool True/false.
 	 */
 	protected static function get_mc(string $list_id='') {
+		// Allow themes to handle this themselves.
+		if (defined('NO_MAILCHIMP') && NO_MAILCHIMP) {
+			static::$api_key = false;
+			static::$list_id = false;
+			static::$mc = false;
+			return false;
+		}
+
 		// Set up the data if it hasn't been done yet.
 		if (is_null(static::$api_key)) {
 			static::$api_key = carbon_get_theme_option('mailchimp_api_key');
@@ -57,9 +65,9 @@ class newsletter {
 					static::$mc = new MailChimp(static::$api_key);
 				}
 			} catch (Throwable $e) {
-				static::$mc = false;
 				static::$api_key = false;
 				static::$list_id = false;
+				static::$mc = false;
 			}
 		}
 
