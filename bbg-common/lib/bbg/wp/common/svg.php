@@ -54,16 +54,6 @@ class svg extends base\hook {
 				return false;
 			}
 
-			// Make sure there aren't lingering classes.
-			if (false !== strpos($content, 'class')) {
-				// Log a warning.
-				error_log("SVG Icon $icon contains CSS classes; these properties should be inlined as non-style attributes.");
-
-				// We'll just assume any styles are meant to be about
-				// fill color.
-				$content = preg_replace('/(class\s*=\s*"[^"]*")/i', 'fill="currentColor"', $content);
-			}
-
 			// Reopen with DOMDocument.
 			if (false === ($dom = common\dom::load_svg($content))) {
 				return false;
