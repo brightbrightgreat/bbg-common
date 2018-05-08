@@ -3,11 +3,11 @@
  * Various tools for a happy and effective WordPress theme.
  *
  * @package BBG Common
- * @version 0.8.4
+ * @version 0.8.5
  *
  * @wordpress-plugin
  * Plugin Name: BBG Common
- * Version: 0.8.4
+ * Version: 0.8.5
  * Plugin URI: https://github.com/brightbrightgreat/bbg-common
  * Description: Various tools for a happy and effective WordPress theme.
  * Text Domain: bbg-common
@@ -34,7 +34,10 @@ if (!defined('ABSPATH')) {
 define('BBGCOMMON_PLUGIN_DIR', dirname(__FILE__) . '/');
 define('BBGCOMMON_INDEX', __FILE__);
 define('BBGCOMMON_BASE_CLASS', 'bbg\\wp\\common\\');
-define('BBG_TESTMODE', false !== strpos(site_url(), '.brightbrightgreat.com'));
+
+if (!defined('BBG_TESTMODE')) {
+	define('BBG_TESTMODE', false !== strpos(site_url(), '.brightbrightgreat.com'));
+}
 
 // Is this installed as a Must-Use plugin?
 $bbgcommon_must_use = (

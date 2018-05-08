@@ -1,16 +1,11 @@
 {
-  "name": "bbg-common",
-  "description": "Various tools for a happy and effective WordPress theme.",
-  "version": "0.5.0",
+  "name": "bbg-common-build",
+  "description": "Build bbg-common package.",
+  "version": "0.1",
   "type": "library",
-  "homepage": "https:\/\/github.com\/brightbrightgreat\/wpskel",
+  "homepage": "https:\/\/blobfolio.com\/",
   "license": "WTFPL",
   "authors": [
-    {
-      "name": "Tiffany Stoik",
-      "email": "tiffany@brightbrightgreat.com",
-      "homepage": "https:\/\/brightbrightgreat.com"
-    },
     {
       "name": "Josh Stoik",
       "email": "josh@blobfolio.com",
@@ -18,16 +13,23 @@
     }
   ],
   "require": {
-		"htmlburger/carbon-fields": "^2.2",
-    "drewm/mailchimp-api": "^2.2"
+    "php": ">= 7.0",
+    "bob": "dev-master"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "ssh://git@blobfolio.com:3417/bob"
+    }
+  ],
   "config": {
     "vendor-dir": "lib\/vendor",
     "preferred-install": "dist"
   },
+  "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
-      "bbg\\wp\\common\\":"lib\/bbg\/wp\/common"},
+      "bbg\\dev\\":"lib\/dev"},
     "files":[]
   }
 }
