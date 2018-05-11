@@ -98,8 +98,8 @@ class serialized_post_meta extends Datastore {
 		$key = $this->get_key_for_field($field);
 		$value = get_metadata($this->get_meta_type(), $this->get_object_id(), $key, true);
 
-		if (!is_array($value)) {
-			$value = array();
+		if (!is_array($value) || !count($value)) {
+			$value = null;
 		}
 
 		return $value;
