@@ -40,6 +40,9 @@ class hook extends base\hook {
 		'bbg_common_print_js_env'=>array(
 			'js_env'=>null,
 		),
+		'admin_init'=>array(
+			'admin_styles'=>null,
+		),
 	);
 
 	// Filters: hook=>[callbacks].
@@ -321,6 +324,21 @@ class hook extends base\hook {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Enqueue Styles (Admin)
+	 *
+	 * @return void Nothing.
+	 */
+	public static function admin_styles() {
+		wp_register_style(
+			'bbgcommon-admin-css',
+			BBGCOMMON_PLUGIN_URL . 'css/admin.css',
+			array(),
+			static::ASSET_VERSION
+		);
+		wp_enqueue_style('bbgcommon-admin-css');
 	}
 
 	// ----------------------------------------------------------------- end header
