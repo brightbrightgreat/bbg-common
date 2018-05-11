@@ -4,6 +4,40 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		// Metadata.
 		pkg: grunt.file.readJSON('package.json'),
+		// CSS.
+		sass: {
+			dist: {
+				options: {
+					outputStyle: 'compressed',
+					sourceMap: false,
+				},
+				files: [
+					{ 'css/admin.css': 'src/scss/admin.scss' }
+				]
+			}
+		},
+		postcss: {
+			options: {
+				map: false,
+				processors: [
+					// Compatibility fixes.
+					require('postcss-fixes')(),
+					// Autoprefix.
+					require('autoprefixer')({
+						browsers: 'last 1 versions'
+					}),
+					// Minify.
+					require('cssnano')({
+						safe: true,
+						calc: false,
+						zindex: false
+					}),
+				]
+			},
+			dist: {
+				src: 'css/*.css'
+			}
+		},
 		// Javascript.
 		jshint: {
 			all: [
@@ -67,7 +101,44 @@ module.exports = function(grunt) {
 		},
 		// Compression.
 		compress: {
-			js: {
+			cssgz: {
+				options: {
+					mode: 'gzip',
+					level: 9
+				},
+				files: [
+					{
+						cwd: 'css/',
+						expand: true,
+						src: ['**/*.css'],
+						dest: 'css/',
+						ext: '.css.gz',
+						extDot: 'last'
+					}
+				]
+			},
+			cssbr: {
+				options: {
+					mode: 'brotli',
+					brotli: {
+						mode: 0,
+						quality: 11,
+						lgwin: 22,
+						lgblock: 0
+					}
+				},
+				files: [
+					{
+						cwd: 'css/',
+						expand: true,
+						src: ['**/*.css'],
+						dest: 'css/',
+						ext: '.css.br',
+						extDot: 'last'
+					}
+				]
+			},
+			jsgz: {
 				options: {
 					mode: 'gzip',
 					level: 9
@@ -83,6 +154,27 @@ module.exports = function(grunt) {
 					}
 				]
 			},
+			jsbr: {
+				options: {
+					mode: 'brotli',
+					brotli: {
+						mode: 0,
+						quality: 11,
+						lgwin: 22,
+						lgblock: 0
+					}
+				},
+				files: [
+					{
+						cwd: 'js/',
+						expand: true,
+						src: ['**/*.min.js'],
+						dest: 'js/',
+						ext: '.js.br',
+						extDot: 'last'
+					}
+				]
+			}
 		},
 		// Garbage collection.
 		clean: {
@@ -128,6 +220,20 @@ module.exports = function(grunt) {
 		},
 		// Watch.
 		watch: {
+			css: {
+				files: ['src/scss/**/*.scss'],
+				tasks: ['css', 'notify:css'],
+				options: {
+					spawn: false
+				},
+			},
+			js: {
+				files: ['src/js/**/*.js'],
+				tasks: ['javascript', 'notify:js'],
+				options: {
+					spawn: false
+				},
+			},
 			php: {
 				files: [
 					'**/*.php'
@@ -137,43 +243,46 @@ module.exports = function(grunt) {
 					spawn: false
 				},
 			},
-			scripts: {
-				files: ['src/js/**/*.js'],
-				tasks: ['javascript', 'notify:js'],
-				options: {
-					spawn: false
-				},
-			}
 		},
 		//Notify
 		notify: {
 			cleanup: {
 				options: {
-					title: "Composer garbage cleaned",
-					message: "grunt-clean has successfully run"
+					title: "Cleanup Done",
+					message: "Garbage and clutter have been removed."
+				}
+			},
+			css: {
+				options: {
+					title: "CSS Done",
+					message: "CSS has been linted, compiled, and minified."
 				}
 			},
 			js: {
 				options: {
-					title: "JS Files built",
-					message: "Uglify and JSHint task complete"
+					title: "Javascript Done",
+					message: "JS has been linted, compiled, and minified."
 				}
 			}
 		}
 	});
 	// These plugins provide necessary tasks.
+	grunt.loadNpmTasks('grunt-blobfolio');
+	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-contrib-compress');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-notify');
-	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-blobfolio');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-compress');
+	grunt.loadNpmTasks('grunt-postcss');
+	grunt.loadNpmTasks('grunt-sass');
 	// Tasks.
 	grunt.registerTask('php', ['blobphp:check']);
+	grunt.registerTask('build', ['clean', 'css', 'javascript']);
 	grunt.registerTask('default', ['javascript', 'php']);
-	grunt.registerTask('javascript', ['jshint', 'uglify', 'compress:js']);
-	grunt.registerTask('build', ['clean', 'javascript']);
+	grunt.registerTask('css', ['sass', 'postcss', 'compress:cssgz', 'compress:cssbr']);
+	grunt.registerTask('javascript', ['jshint', 'uglify', 'compress:jsgz', 'compress:jsbr']);
+
 	grunt.event.on('watch', function(action, filepath, target) {
 		grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
 	});
