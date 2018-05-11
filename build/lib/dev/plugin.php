@@ -11,7 +11,7 @@
 
 namespace bbg\dev;
 
-class plugin extends \blobfolio\bob\base\wp_plugin {
+class plugin extends \blobfolio\bob\base\build_wp {
 	const NAME = 'bbg-common';
 
 	// Various file paths.
