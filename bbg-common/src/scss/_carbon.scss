@@ -1,0 +1,172 @@
+/**
+ * Admin: Carbon Fields
+ *
+ * Supplement some of Carbon Fields' inflexibility with some good old
+ * fashioned monkey grease!
+ *
+ * @package blob-wp
+ * @author Blobfolio, LLC <hello@blobfolio.com>
+ */
+
+
+
+// ---------------------------------------------------------------------
+// Classes
+// ---------------------------------------------------------------------
+
+/**
+ * Field Units
+ *
+ * Append or prepend a unit label to input fields.
+ *
+ * Use Class: .carbon__unit-X
+ */
+
+$units: (
+	append: (
+		mm:  'mm',
+		cm:  'cm',
+		in:  'in',
+		ft:  'ft',
+		yd:  'yd',
+		m:   'm',
+		km:  'km',
+		mi:  'mi',
+
+		g:   'g',
+		oz:  'oz',
+		lbs: 'lbs',
+		kg:  'kg',
+	),
+
+	prepend: (
+		eur: '€',
+		gbp: '£',
+		usd: '$',
+	),
+);
+
+@each $orientation, $values in $units {
+	@each $unit, $label in $values {
+		.carbon__unit-#{$unit} {
+			// Extend the right helper.
+			@extend %carbon__unit-#{$orientation};
+			// Apply the right label.
+			& > .field-holder:after { content: '#{$label}'; }
+		}
+	}
+}
+
+/**
+ * Static Complex
+ *
+ * Complex fields have a lot of advantages, but the add/remove/repeat
+ * features are not always desired. This class removes tabs and action
+ * buttons from the group.
+ *
+ * Note: because actions are removed, be sure to use ->set_default_value
+ * or else options won't be configurable.
+ */
+.carbon__static-complex {
+	// Make the group label more distinctive.
+	& > label {
+		font-size: 1.25rem;
+		font-weight: 300!important;
+		height: auto;
+		margin: 0.5em 0;
+	}
+
+	// We want to apply most overrides to direct children of the
+	// sub-container.
+	& > .field-holder > .carbon-subcontainer {
+		// Hide tabs and actions.
+		& > .groups-wrapper {
+			& > .group-tabs-nav-holder,
+			& > .carbon-groups-holder > .carbon-row > .carbon-group-actions { display: none; }
+		}
+
+		// Make sure fields occupy the full width.
+		& > .layout-tabbed-vertical > .carbon-groups-holder { flex: 0 0 100%; }
+
+		// Fix row/container styles.
+		& > .groups-wrapper > .carbon-groups-holder {
+			& > .carbon-row {
+				padding-bottom: 0;
+				& > .fields-container { border-width: 0 0 1px 1px; }
+			}
+		}
+	}
+}
+
+/**
+ * Simple WYSIWYG
+ *
+ * Remove media-like functionality to simplify the interface.
+ */
+.carbon__basic-wysiwyg {
+	// Holy shit is TinyMCE ever a nester!
+	& > .field-holder > .carbon-wysiwyg {
+		// Hide media button and format list.
+		& > .wp-media-buttons,
+		& > .wp-editor-container > .mce-panel .mce-listbox { display: none!important; }
+
+		// Mitigate the toolbar stacking.
+		& > .wp-editor-container .mce-toolbar-grp > .mce-container-body { display: flex; }
+	}
+}
+
+
+
+// ---------------------------------------------------------------------
+// Extenders
+// ---------------------------------------------------------------------
+
+/**
+ * Field Units
+ */
+%carbon__unit-append,
+%carbon__unit-prepend {
+	// All changes to the field holder.
+	& > .field-holder {
+		position: relative;
+
+		// The input should not have X margins.
+		& > input {
+			margin-left: 0;
+			margin-right: 0;
+		}
+
+		// The ::after pseudo-element holds the label.
+		&:after {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			width: 50px;
+
+			font-size: .75rem;
+			font-weight: 600;
+			letter-spacing: .1em;
+
+			background-color: #e5e5e5;
+		}
+	}
+}
+
+// Only difference between the two are some left and rights.
+%carbon__unit-append {
+	& > .field-holder {
+		padding-right: 50px;
+		&:after { right: 0; }
+	}
+}
+%carbon__unit-prepend {
+	& > .field-holder {
+		padding-left: 50px;
+		&:after { left: 0; }
+	}
+}

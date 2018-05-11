@@ -1,12 +1,12 @@
 <?php
 /**
- * Usermeta Datastore: Serialize Complex Fields
+ * Options Datastore: Serialize Complex Fields
  *
  * Store "Complex" field data as a single, serialized row in the
  * database rather than a hundred separate entries.
  *
  * To use, add the following to a Field::make():
- * ->set_datastore(new bbg\wp\common\fields\serialized_user_meta());
+ * ->set_datastore(new blobfolio\wp\fields\serialized_theme_options());
  *
  * @package bbg-common
  * @author  Bright Bright Great <sayhello@brightbrightgreat.com>
@@ -20,7 +20,7 @@ use \Carbon_Fields\Datastore\Datastore;
 /**
  * Stores serialized values in the database
  */
-class serialized_user_meta extends Datastore {
+class serialized_theme_options extends Datastore {
 
 	/**
 	 * Init
@@ -29,34 +29,6 @@ class serialized_user_meta extends Datastore {
 	 */
 	public function init() {
 
-	}
-
-	/**
-	 * Retrieve the type of meta data.
-	 *
-	 * @return string
-	 */
-	public function get_meta_type() {
-		return 'user';
-	}
-
-	/**
-	 * Retrieve the meta table name to query.
-	 *
-	 * @return string
-	 */
-	public function get_table_name() {
-		global $wpdb;
-		return $wpdb->usermeta;
-	}
-
-	/**
-	 * Retrieve the meta table field name to query by.
-	 *
-	 * @return string
-	 */
-	public function get_table_field_name() {
-		return 'user_id';
 	}
 
 	/**
@@ -78,14 +50,7 @@ class serialized_user_meta extends Datastore {
 	 * @return void Nothing.
 	 */
 	protected function save_key_value_pair($key, $value) {
-		if (!update_metadata(
-			$this->get_meta_type(),
-			$this->get_object_id(),
-			$key,
-			$value
-		)) {
-			add_metadata($this->get_meta_type(), $this->get_object_id(), $key, $value, true);
-		}
+		update_option($key, $value);
 	}
 
 	/**
@@ -96,7 +61,7 @@ class serialized_user_meta extends Datastore {
 	 */
 	public function load(Field $field) {
 		$key = $this->get_key_for_field($field);
-		$value = get_metadata($this->get_meta_type(), $this->get_object_id(), $key, true);
+		$value = get_option($key, null);
 
 		if (!is_array($value) || !count($value)) {
 			$value = null;
@@ -138,6 +103,6 @@ class serialized_user_meta extends Datastore {
 		}
 
 		$key = $this->get_key_for_field($field);
-		delete_metadata($this->get_meta_type(), $this->get_object_id(), $key);
+		delete_option($key);
 	}
 }
