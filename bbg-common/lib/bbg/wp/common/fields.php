@@ -30,6 +30,12 @@ class fields extends base\fields {
 		),
 	);
 
+	const FILTERS = array(
+		'bbg_common_static_complex'=>array(
+			'static_complex'=>null,
+		),
+	);
+
 
 	/**
 	 * Init fields
@@ -39,7 +45,6 @@ class fields extends base\fields {
 	public static function fields_init() {
 		\Carbon_Fields\Carbon_Fields::boot();
 	}
-
 
 	/**
 	 * OG Meta (individual content)
@@ -118,7 +123,6 @@ class fields extends base\fields {
 		));
 	}
 
-
 	/**
 	 * Tracking Code
 	 *
@@ -142,7 +146,6 @@ class fields extends base\fields {
 			)
 		);
 	}
-
 
 	/**
 	 * MailChimp
@@ -176,5 +179,21 @@ class fields extends base\fields {
 				->set_help_text('This text will be shown when a user leaves the list.'),
 			)
 		);
+	}
+
+	/**
+	 * Filter Static Complex Fields
+	 *
+	 * Complex fields assume repetition, but for our hacky static
+	 * edition we just want the first index.
+	 *
+	 * @param array $field Field value.
+	 * @return bool|array Field or false.
+	 */
+	public static function static_complex($field) {
+		if (isset($field[0])) {
+			return $field[0];
+		}
+		return false;
 	}
 }
