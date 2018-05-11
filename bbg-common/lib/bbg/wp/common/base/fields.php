@@ -23,7 +23,6 @@ abstract class fields extends hook {
 	// Category and post tag.
 	protected static $linkables = null;
 
-
 	/**
 	 * Get Linkables
 	 *
@@ -85,7 +84,6 @@ abstract class fields extends hook {
 
 		return apply_filters('bbg_common_linkables', static::$linkables);
 	}
-
 
 	/**
 	 * Clone fields.
