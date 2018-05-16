@@ -1,9 +1,9 @@
 {
-  "name": "bbg-common/bob",
+  "name": "bbg-common\/bob",
   "description": "Build bbg-common package.",
   "version": "0.1",
   "type": "library",
-  "homepage": "https:\/\/blobfolio.com\/",
+  "homepage": "https:\/\/github.com\/brightbrightgreat\/bbg-common",
   "license": "WTFPL",
   "authors": [
     {
