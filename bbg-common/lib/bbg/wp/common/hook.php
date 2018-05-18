@@ -363,7 +363,7 @@ class hook extends base\hook {
 		if (count($privacy)) {
 			// Add the notice!
 			wp_add_privacy_policy_content(
-				'Skeletor',
+				'BBG Common',
 				wp_kses_post(wpautop(implode("\n\n", $privacy)))
 			);
 		}
