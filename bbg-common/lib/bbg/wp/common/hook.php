@@ -42,6 +42,7 @@ class hook extends base\hook {
 		),
 		'admin_init'=>array(
 			'admin_styles'=>null,
+			'privacy_policy'=>null,
 		),
 	);
 
@@ -341,6 +342,33 @@ class hook extends base\hook {
 		wp_enqueue_style('bbgcommon-admin-css');
 	}
 
+	/**
+	 * Privacy Policy
+	 *
+	 * @return void Nothing.
+	 */
+	public static function privacy_policy() {
+		// Not sure why this lacks a dedicated hook...
+		if (!function_exists('wp_add_privacy_policy_content')) {
+			return;
+		}
+
+		$privacy = array();
+
+		// Mention Google.
+		if (static::has_gtm()) {
+			$privacy[] = __('This site uses Google Tag Manager for analytics and tracking purposes. GTM may, in turn, launch additional third-party tracking scripts.', 'bbg-common');
+		}
+
+		if (count($privacy)) {
+			// Add the notice!
+			wp_add_privacy_policy_content(
+				'Skeletor',
+				wp_kses_post(wpautop(implode("\n\n", $privacy)))
+			);
+		}
+	}
+
 	// ----------------------------------------------------------------- end header
 
 
@@ -538,7 +566,7 @@ class hook extends base\hook {
 	// -----------------------------------------------------------------
 
 	/**
-	 * Has GTM?
+	 * Get GTM ID
 	 *
 	 * GTM code is only relevant if the site uses it. We should also
 	 * disable it for WP users and testing sites.
@@ -570,6 +598,18 @@ class hook extends base\hook {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Has GTM
+	 *
+	 * A simple true/false whether or not GTM is maybe enabled.
+	 *
+	 * @return bool True/false.
+	 */
+	public static function has_gtm() {
+		static::get_gtm();
+		return ((!defined('NO_GTM') || !NO_GTM) && static::$gtm);
 	}
 
 	/**
