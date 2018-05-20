@@ -1,4 +1,9 @@
+**/*.ai
+**/*.br
 **/*.git
+**/*.gz
+**/*.psd
+**/*.sketch
 **/.DS_Store
 **/.sass-cache/
 **/composer.lock
@@ -6,11 +11,6 @@
 **/package-lock.json
 **/secrets.json
 **/wp-config.php
-**/*.ai
-**/*.br
-**/*.gz
-**/*.psd
-**/*.sketch
 /bbg-common/lib/vendor/
 /build/bob
 /build/lib/vendor/
