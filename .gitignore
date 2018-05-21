@@ -1,18 +1,16 @@
-# Folders
-node_modules
-.sass-cache
-
-# Files
-secrets.json
-wp-config.php
-package-lock.json
-
-# Globs
-dist/*.css
-source/*.css
-*.DS_Store
-*.sketch
-*.map
-*.psd
-*.ai
-*.gz
+**/*.ai
+**/*.br
+**/*.git
+**/*.gz
+**/*.psd
+**/*.sketch
+**/.DS_Store
+**/.sass-cache/
+**/composer.lock
+**/node_modules/
+**/package-lock.json
+**/secrets.json
+**/wp-config.php
+/bbg-common/lib/vendor/
+/build/bob
+/build/lib/vendor/

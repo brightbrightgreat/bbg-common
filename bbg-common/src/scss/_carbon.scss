@@ -164,6 +164,28 @@ $units: (
 	}
 }
 
+/**
+ * Fractional Display
+ *
+ * This will try to group small fields onto a single line (screen width
+ * permitting). To prevent UX weirdness, these classes should be applied
+ * to a line's worth of back-to-back fields. For example, when doing
+ * halves, there should be two fields with the half class.
+ */
+$sizes: (
+	half: 50%,
+	third: 33.33%,
+	quarter: 25%,
+);
+@each $size, $value in $sizes {
+	.carbon__#{$size}-field {
+		@media screen and (min-width: 1100px) {
+			flex: 0 0 #{$value}!important;
+			width: #{$value}!important;
+		}
+	}
+}
+
 
 
 // ---------------------------------------------------------------------
