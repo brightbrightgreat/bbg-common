@@ -54,7 +54,7 @@ module.exports = function(grunt) {
 			'src/js/lib/vue.min.js': 'https://raw.githubusercontent.com/vuejs/vue/v2.5.16/dist/vue.min.js',
 			'src/js/lib/blobject-fit.min.js': 'https://raw.githubusercontent.com/Blobfolio/blobject-fit/master/blobject-fit.min.js',
 			'src/js/lib/es6-shim.min.js': 'https://raw.githubusercontent.com/paulmillr/es6-shim/master/es6-shim.min.js',
-			'src/js/polyfills/intersect-observer.js': 'https://raw.githubusercontent.com/w3c/IntersectionObserver/master/polyfill/intersection-observer.js',
+			'src/js/lib/intersect-observer.js': 'https://raw.githubusercontent.com/w3c/IntersectionObserver/master/polyfill/intersection-observer.js',
 		},
 		eslint: {
 			check: {
@@ -75,21 +75,19 @@ module.exports = function(grunt) {
 				files: [{
 					// Generic third-party libraries.
 					'js/lib.min.js': [
-						// Polyfills.
 						'src/js/lib/blobject-fit.min.js',
-						'src/js/lib/es6-shim.min.js'
+						'src/js/lib/es6-shim.min.js',
 						'src/js/lib/intersect-observer.js',
 						'src/js/lib/matches.js',
 						'src/js/lib/matchmedia-0.js',
 						'src/js/lib/matchmedia-1.js',
 						'src/js/lib/param.js',
-						// Helper libraries.
 						'src/js/lib/blobselect.min.js',
 						'src/js/lib/blob-slide.min.js',
 						'src/js/lib/debounce.js',
 						'src/js/lib/fecha.min.js',
 						'src/js/lib/js.cookie.js',
-						'src/js/lib/smooth-scroll.min.js'
+						'src/js/lib/smooth-scroll.min.js',
 					],
 					// Our main Vue bundle.
 					'js/vue.min.js': [
@@ -99,7 +97,7 @@ module.exports = function(grunt) {
 						'src/js/custom/vue-directives.js',
 						'src/js/custom/vue-filters.js',
 						'src/js/custom/vue-methods.js',
-						'src/js/lib/vue-blob-forms.min.js'
+						'src/js/lib/vue-blob-forms.min.js',
 					],
 					// A testmode Vue bundle.
 					'js/vue-testmode.min.js': [
@@ -109,19 +107,19 @@ module.exports = function(grunt) {
 						'src/js/custom/vue-directives.js',
 						'src/js/custom/vue-filters.js',
 						'src/js/custom/vue-methods.js',
-						'src/js/lib/vue-blob-forms.min.js'
+						'src/js/lib/vue-blob-forms.min.js',
 					],
 					// Our infinite scroll helper.
 					'js/vue-infinite.min.js': [
-						'src/js/custom/vue-infinite.js'
+						'src/js/custom/vue-infinite.js',
 					],
 					// Move blob-phone.
 					'js/blob-phone.min.js': [
-						'src/js/lib/blob-phone.min.js'
+						'src/js/lib/blob-phone.min.js',
 					],
 					// Our main Vue file.
 					'js/vue-core.min.js': [
-						'src/js/custom/vue-core.js'
+						'src/js/custom/vue-core.js',
 					],
 				}]
 			}
@@ -297,10 +295,10 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-blobfolio');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-compress');
-	grunt.loadNpmTasks('grunt-contrib-eslint');
 	grunt.loadNpmTasks('grunt-contrib-uglify-es');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-curl');
+	grunt.loadNpmTasks('grunt-eslint');
 	grunt.loadNpmTasks('grunt-notify');
 	grunt.loadNpmTasks('grunt-postcss');
 	grunt.loadNpmTasks('grunt-sass');
