@@ -39,10 +39,33 @@ module.exports = function(grunt) {
 			}
 		},
 		// Javascript.
-		jshint: {
-			all: [
-				'src/js/custom/*.js'
-			]
+		curl: {
+			'src/js/lib/blob-phone.min.js': 'https://raw.githubusercontent.com/Blobfolio/blob-phone/master/lib/js/blob-phone.min.js',
+			'src/js/lib/blob-scroll.min.js': 'https://raw.githubusercontent.com/Blobfolio/blob-scroll/master/blob-scroll.min.js',
+			'src/js/lib/blob-slide.min.js': 'https://raw.githubusercontent.com/Blobfolio/blob-slide/master/blob-slide.min.js',
+			'src/js/lib/blobselect.min.js': 'https://raw.githubusercontent.com/Blobfolio/blob-select/master/dist/js/blobselect.min.js',
+			'src/js/lib/fecha.min.js': 'https://raw.githubusercontent.com/taylorhakes/fecha/master/fecha.min.js',
+			'src/js/lib/js.cookie.js': 'https://raw.githubusercontent.com/js-cookie/js-cookie/master/src/js.cookie.js',
+			'src/js/lib/matchmedia-0.js': 'https://raw.githubusercontent.com/paulirish/matchMedia.js/master/matchMedia.js',
+			'src/js/lib/matchmedia-1.js': 'https://raw.githubusercontent.com/paulirish/matchMedia.js/master/matchMedia.addListener.js',
+			'src/js/lib/vue-blob-forms.min.js': 'https://raw.githubusercontent.com/Blobfolio/vue-blob-forms/master/dist/vue-blob-forms.min.js',
+			'src/js/lib/vue-resource.min.js': 'https://raw.githubusercontent.com/pagekit/vue-resource/develop/dist/vue-resource.min.js',
+			'src/js/lib/vue.js': 'https://raw.githubusercontent.com/vuejs/vue/v2.5.16/dist/vue.js',
+			'src/js/lib/vue.min.js': 'https://raw.githubusercontent.com/vuejs/vue/v2.5.16/dist/vue.min.js',
+			'src/js/lib/blobject-fit.min.js': 'https://raw.githubusercontent.com/Blobfolio/blobject-fit/master/blobject-fit.min.js',
+			'src/js/lib/es6-shim.min.js': 'https://raw.githubusercontent.com/paulmillr/es6-shim/master/es6-shim.min.js',
+			'src/js/polyfills/intersect-observer.js': 'https://raw.githubusercontent.com/w3c/IntersectionObserver/master/polyfill/intersection-observer.js',
+		},
+		eslint: {
+			check: {
+				src: ['src/js/custom/**/*.js'],
+			},
+			fix: {
+				options: {
+					fix: true,
+				},
+				src: ['src/js/custom/**/*.js'],
+			}
 		},
 		uglify: {
 			options: {
@@ -52,16 +75,20 @@ module.exports = function(grunt) {
 				files: [{
 					// Generic third-party libraries.
 					'js/lib.min.js': [
+						// Polyfills.
 						'src/js/lib/blobject-fit.min.js',
+						'src/js/lib/es6-shim.min.js'
+						'src/js/lib/intersect-observer.js',
+						'src/js/lib/matches.js',
+						'src/js/lib/matchmedia-0.js',
+						'src/js/lib/matchmedia-1.js',
+						'src/js/lib/param.js',
+						// Helper libraries.
 						'src/js/lib/blobselect.min.js',
 						'src/js/lib/blob-slide.min.js',
 						'src/js/lib/debounce.js',
 						'src/js/lib/fecha.min.js',
-						'src/js/lib/intersect-observer.js',
 						'src/js/lib/js.cookie.js',
-						'src/js/lib/matches.js',
-						'src/js/lib/matchmedia.min.js',
-						'src/js/lib/param.js',
 						'src/js/lib/smooth-scroll.min.js'
 					],
 					// Our main Vue bundle.
@@ -270,9 +297,10 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-blobfolio');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-compress');
-	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-eslint');
+	grunt.loadNpmTasks('grunt-contrib-uglify-es');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-curl');
 	grunt.loadNpmTasks('grunt-notify');
 	grunt.loadNpmTasks('grunt-postcss');
 	grunt.loadNpmTasks('grunt-sass');
