@@ -307,7 +307,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('build', ['clean', 'css', 'javascript']);
 	grunt.registerTask('default', ['javascript', 'php']);
 	grunt.registerTask('css', ['sass', 'postcss', 'compress:cssgz', 'compress:cssbr']);
-	grunt.registerTask('javascript', ['jshint', 'uglify', 'compress:jsgz', 'compress:jsbr']);
+	grunt.registerTask('javascript', ['eslint', 'uglify', 'compress:jsgz', 'compress:jsbr']);
 
 	grunt.event.on('watch', function(action, filepath, target) {
 		grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
