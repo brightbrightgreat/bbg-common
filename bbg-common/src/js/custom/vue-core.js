@@ -4,10 +4,10 @@
  * This is the main Vue module. Themes should extend this through
  * plugins.
  */
-/* global Vue */
-/* global Cookies */
+/* global blobScroll */
 /* global blobThrottle */
-/* global smoothScroll */
+/* global Cookies */
+/* global Vue */
 (function() {
 
 	// Pull the data from the page.
@@ -172,21 +172,19 @@
 				this.session.vue = true;
 
 				// Set up our smooth scroller.
-				smoothScroll.init({
-					selector: 'a[href^="#"]',
-					speed: 1000,
-					offset: 170,
-				});
+				const links = document.querySelectorAll('a[href^="#"]:not([data-scroll-ignore])');
+				for (let i = 0; i < links.length; ++i) {
+					links[i].addEventListener('click', function(e) {
+						e.preventDefault();
+						blobScroll.scroll(e.target);
+					});
+				}
 
 				// Maybe we should jump to somewhere on the page?
 				if (window.location.hash) {
-					try {
-						var anchor = document.querySelector(window.location.hash);
-						if (anchor) {
-							smoothScroll.animateScroll(anchor);
-						}
-					} catch (Ex) {
-						anchor = '';
+					const anchor = document.querySelector(window.location.hash);
+					if (anchor) {
+						blobScroll.scroll(anchor);
 					}
 				}
 

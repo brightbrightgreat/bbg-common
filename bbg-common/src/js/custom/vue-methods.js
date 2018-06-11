@@ -6,7 +6,7 @@
  *
  * TODO: these functions should be organized into blocks.
  */
-/* global smoothScroll */
+/* global blobScroll */
 /* global blobSlide */
 (function() {
 
@@ -458,7 +458,7 @@
 					for (var i = 0; i < classes.length; ++i) {
 						var field = vue.first('.' + classes[i]);
 						if (field) {
-							smoothScroll.animateScroll(field.parentNode, null, {offset: offset});
+							blobScroll.scroll(field.parentNode, {offset: offset});
 							return true;
 						}
 					}
