@@ -1,17 +1,10 @@
 /**
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the W3C SOFTWARE AND DOCUMENT NOTICE AND LICENSE.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 (function(window, document) {
@@ -131,6 +124,12 @@ IntersectionObserver.prototype.THROTTLE_TIMEOUT = 100;
  */
 IntersectionObserver.prototype.POLL_INTERVAL = null;
 
+/**
+ * Use a mutation observer on the root element
+ * to detect intersection changes.
+ */
+IntersectionObserver.prototype.USE_MUTATION_OBSERVER = true;
+
 
 /**
  * Starts observing a target element for intersection changes based on
@@ -138,10 +137,11 @@ IntersectionObserver.prototype.POLL_INTERVAL = null;
  * @param {Element} target The DOM element to observe.
  */
 IntersectionObserver.prototype.observe = function(target) {
-  // If the target is already being observed, do nothing.
-  if (this._observationTargets.some(function(item) {
+  var isTargetAlreadyObserved = this._observationTargets.some(function(item) {
     return item.element == target;
-  })) {
+  });
+
+  if (isTargetAlreadyObserved) {
     return;
   }
 
@@ -267,7 +267,7 @@ IntersectionObserver.prototype._monitorIntersections = function() {
       addEvent(window, 'resize', this._checkForIntersections, true);
       addEvent(document, 'scroll', this._checkForIntersections, true);
 
-      if ('MutationObserver' in window) {
+      if (this.USE_MUTATION_OBSERVER && 'MutationObserver' in window) {
         this._domObserver = new MutationObserver(this._checkForIntersections);
         this._domObserver.observe(document, {
           attributes: true,

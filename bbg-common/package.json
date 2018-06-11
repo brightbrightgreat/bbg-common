@@ -6,13 +6,14 @@
     "grunt": "*",
     "grunt-contrib-clean": "*",
     "grunt-contrib-compress": "*",
-    "grunt-contrib-jshint": "*",
-    "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
+    "grunt-curl": "*",
+    "grunt-eslint": "*",
     "grunt-notify": "*",
     "grunt-postcss": "*",
     "grunt-sass": "*",
     "postcss-fixes": "*",
-    "grunt-blobfolio": "git+ssh://git@blobfolio.com:3417/grunt-blobfolio"
+    "grunt-blobfolio": "git+ssh://git@blobfolio.com:3417/grunt-blobfolio",
+    "grunt-contrib-uglify-es": "git://github.com/gruntjs/grunt-contrib-uglify.git#harmony"
   }
 }
