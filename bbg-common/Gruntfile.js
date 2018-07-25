@@ -43,7 +43,7 @@ module.exports = function(grunt) {
 			'src/js/lib/blob-phone.min.js': 'https://raw.githubusercontent.com/Blobfolio/blob-phone/master/lib/js/blob-phone.min.js',
 			'src/js/lib/blob-scroll.min.js': 'https://raw.githubusercontent.com/Blobfolio/blob-scroll/master/blob-scroll.min.js',
 			'src/js/lib/blob-slide.min.js': 'https://raw.githubusercontent.com/Blobfolio/blob-slide/master/blob-slide.min.js',
-			'src/js/lib/blobselect.min.js': 'https://raw.githubusercontent.com/Blobfolio/blob-select/master/dist/js/blobselect.min.js',
+			'src/js/lib/blobselect.min.js': 'https://raw.githubusercontent.com/Blobfolio/blob-select/master/dist/blobselect.min.js',
 			'src/js/lib/fecha.min.js': 'https://raw.githubusercontent.com/taylorhakes/fecha/master/fecha.min.js',
 			'src/js/lib/js.cookie.js': 'https://raw.githubusercontent.com/js-cookie/js-cookie/master/src/js.cookie.js',
 			'src/js/lib/matchmedia-0.js': 'https://raw.githubusercontent.com/paulirish/matchMedia.js/master/matchMedia.js',
