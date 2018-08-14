@@ -29,8 +29,10 @@
 			 * @returns {void} Nothing.
 			 */
 			onScroll: function() {
-				this.window.scrollDirection = (this.window.scrolled < window.scrollY) ? 'down' : 'up';
-				this.window.scrolled = window.scrollY;
+				var scrollY = window.scrollY || document.documentElement.scrollTop;
+
+				this.window.scrollDirection = (this.window.scrolled < scrollY) ? 'down' : 'up';
+				this.window.scrolled = scrollY;
 			},
 
 			/**
