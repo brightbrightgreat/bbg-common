@@ -1,20 +1,23 @@
-//-------------------------------------------------
-// simple debounce
-//
-// @param callback
-// @param timeout
+/**
+ * Debounce
+ *
+ * @param {function} fn Function.
+ * @param {int} wait Timeout.
+ * @param {bool} no_postpone Start now.
+ * @returns {void} Nothing.
+ */
 var blobDebounce = function(fn, wait, no_postpone){
 	var args, context, result, timeout;
 	var executed = true;
 
-	//execute the callback function
+	// Execute the callback function.
 	function ping(){
 		result = fn.apply(context || this, args || []);
 		context = args = null;
 		executed = true;
 	}
 
-	//cancel the timeout
+	// Cancel the timeout.
 	function cancel() {
 		if(timeout){
 			clearTimeout(timeout);
@@ -22,7 +25,7 @@ var blobDebounce = function(fn, wait, no_postpone){
 		}
 	}
 
-	//generate a wrapper function to return
+	// Generate a wrapper function to return.
 	function wrapper() {
 		context = this;
 		args = arguments;
@@ -36,27 +39,29 @@ var blobDebounce = function(fn, wait, no_postpone){
 		}
 	}
 
-	//reset
+	// Reset.
 	wrapper.cancel = cancel;
 	return wrapper;
 };
 
-//-------------------------------------------------
-// simple throttle
-//
-// @param callback
-// @param timeout
+/**
+ * Throttle
+ *
+ * @param {function} fn Function.
+ * @param {int} wait Timeout.
+ * @returns {void} Nothing.
+ */
 var blobThrottle = function(fn, wait){
 	var args, context, result, timeout, last;
 
-	//execute the callback function
+	// Execute the callback function.
 	function ping(){
 		result = fn.apply(context || this, args || []);
 		context = args = null;
 		last = new Date();
 	}
 
-	//cancel the timeout
+	// Cancel the timeout.
 	function cancel() {
 		if(timeout){
 			clearTimeout(timeout);
@@ -64,7 +69,7 @@ var blobThrottle = function(fn, wait){
 		}
 	}
 
-	//generate a wrapper function to return
+	// Generate a wrapper function to return.
 	function wrapper() {
 		context = this;
 		args = arguments;
@@ -80,7 +85,7 @@ var blobThrottle = function(fn, wait){
 		}
 	}
 
-	//reset
+	// Reset.
 	wrapper.cancel = cancel;
 	return wrapper;
 };
