@@ -3,11 +3,11 @@
  * Various tools for a happy and effective WordPress theme.
  *
  * @package BBG Common
- * @version 0.9.6
+ * @version 0.9.7
  *
  * @wordpress-plugin
  * Plugin Name: BBG Common
- * Version: 0.9.6
+ * Version: 0.9.7
  * Plugin URI: https://github.com/brightbrightgreat/bbg-common
  * Description: Various tools for a happy and effective WordPress theme.
  * Text Domain: bbg-common
