@@ -184,9 +184,13 @@
 
 				// Maybe we should jump to somewhere on the page?
 				if (window.location.hash) {
-					const anchor = document.querySelector(window.location.hash);
-					if (anchor) {
-						blobScroll.scroll(anchor);
+					try {
+						const anchor = document.querySelector(window.location.hash);
+						if (anchor) {
+							blobScroll.scroll(anchor);
+						}
+					} catch (Ex) {
+						console.warn('Not scrolling to hash.');
 					}
 				}
 
