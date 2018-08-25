@@ -84,6 +84,7 @@ module.exports = function(grunt) {
 						'src/js/lib/param.js',
 						'src/js/lib/blobselect.min.js',
 						'src/js/lib/blob-slide.min.js',
+						'src/js/lib/blob-scroll.min.js',
 						'src/js/lib/debounce.js',
 						'src/js/lib/fecha.min.js',
 						'src/js/lib/js.cookie.js',
