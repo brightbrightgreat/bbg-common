@@ -441,7 +441,7 @@
 				var vue = this;
 				Vue.nextTick(function() {
 					var classes = ['error', 'error-message', 'is-invalid'];
-					var offset = 170;
+					var offset = -170;
 					var main = document.querySelector('main');
 
 					// If the page has a <main> element, use it to find an
@@ -451,6 +451,10 @@
 						var style = window.getComputedStyle(main);
 						offset = parseInt(style.getPropertyValue('margin-top')) || 0;
 						offset += 30;
+
+						// We want a negative value rather than a
+						// positive one.
+						offset = 0 - offset;
 					}
 
 					// Check for matches in order and scroll to the first we

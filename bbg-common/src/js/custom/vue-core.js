@@ -4,7 +4,7 @@
  * This is the main Vue module. Themes should extend this through
  * plugins.
  */
-/* global blobScroll */
+
 /* global blobThrottle */
 /* global Cookies */
 /* global Vue */
@@ -172,23 +172,6 @@
 			// We'll run this once as soon as Vue seems to be loaded.
 			if (('undefined' !== typeof this.session) && (false === this.session.vue)) {
 				this.session.vue = true;
-
-				// Set up our smooth scroller.
-				const links = document.querySelectorAll('a[href^="#"]:not([data-scroll-ignore])');
-				for (let i = 0; i < links.length; ++i) {
-					links[i].addEventListener('click', function(e) {
-						e.preventDefault();
-						blobScroll.scroll(e.target);
-					});
-				}
-
-				// Maybe we should jump to somewhere on the page?
-				if (window.location.hash) {
-					const anchor = document.querySelector(window.location.hash);
-					if (anchor) {
-						blobScroll.scroll(anchor);
-					}
-				}
 
 				// Two quick polyfills.
 				Element.prototype.isNodeList = function() { return false; };
