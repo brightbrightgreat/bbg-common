@@ -70,7 +70,10 @@ class sitemap extends base\hook {
 		}
 
 		// Do we have any URLs?
-		$urls = static::sitemap_urls();
+		$urls = array_merge(
+			static::sitemap_post_urls(),
+			static::sitemap_term_urls()
+		);
 
 		$sitemap = sprintf(
 			static::SITEMAP_XML,
@@ -85,11 +88,11 @@ class sitemap extends base\hook {
 	}
 
 	/**
-	 * Build Sitemap Entries
+	 * Build Sitemap Entries (Posts)
 	 *
 	 * @return array XML.
 	 */
-	protected static function sitemap_urls() {
+	protected static function sitemap_post_urls() {
 		global $wpdb;
 		$out = array();
 
@@ -276,6 +279,80 @@ class sitemap extends base\hook {
 							}
 							$line[$k] = implode("\n", $tmp);
 							break;
+						// Priority should have one decimal.
+						case 'priority':
+							r_sanitize::to_range($line[$k], 0.1, 1.0);
+							$line[$k] = number_format($line[$k], 1, '.', '');
+							break;
+						default:
+							$line[$k] = str_replace(
+								$replace_keys,
+								$replace_values,
+								$line[$k]
+							);
+					}
+
+					$line_out[] = "<$k>{$line[$k]}</$k>";
+				}
+				$out[$url] = '<url>' . implode("\n", $line_out) . '</url>';
+			}
+		}
+
+		ksort($out);
+		return $out;
+	}
+
+	/**
+	 * Build Sitemap Entries (Posts)
+	 *
+	 * @return array XML.
+	 */
+	protected static function sitemap_term_urls() {
+		global $wpdb;
+		$out = array();
+
+		// Post types.
+		$taxonomies = (array) apply_filters(
+			'bbg_common_sitemap_taxonomies',
+			array()
+		);
+		$default = array(
+			'priority'=>0.2,
+			'frequency'=>'monthly',
+		);
+		foreach ($taxonomies as $k=>$v) {
+			if (!preg_match('/^[a-z\d\-_]+$/i', $k)) {
+				unset($taxonomies[$k]);
+			}
+			else {
+				$taxonomies[$k] = data::parse_args($v, $default);
+			}
+		}
+		if (!count($taxonomies)) {
+			return $out;
+		}
+
+		// Get all terms.
+		$terms = get_terms(array('taxonomy'=>array_keys($taxonomies)));
+		if (is_array($terms)) {
+			// We'll need to escape certain characters for XML.
+			$replace_keys = array('&', '"', "'", '<', '>');
+			$replace_values = array('&amp;', '&quot;', '&apos;', '&lt;', '&gt;');
+
+			foreach ($terms as $v) {
+				$line = array(
+					'loc'=>get_term_link($v),
+					'lastmod'=>date(
+						static::SITEMAP_DATETIME,
+						strtotime(current_time('Y-m-d 00:00:00'))
+					),
+					'changefreq'=>$taxonomies[$v->taxonomy]['frequency'],
+					'priority'=>$taxonomies[$v->taxonomy]['priority'],
+				);
+
+				$line_out = array();
+				foreach ($line as $k=>$v) {
+					switch ($k) {
 						// Priority should have one decimal.
 						case 'priority':
 							r_sanitize::to_range($line[$k], 0.1, 1.0);
