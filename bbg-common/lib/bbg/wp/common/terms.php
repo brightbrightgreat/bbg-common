@@ -48,7 +48,10 @@ class terms {
 				INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id
 				INNER JOIN $wpdb->term_relationships AS r ON r.term_taxonomy_id = tt.term_taxonomy_id
 				INNER JOIN $wpdb->posts AS p ON p.ID = r.object_id
-				WHERE p.post_type IN('%s') AND tt.taxonomy IN('%s')
+				WHERE
+					p.post_type IN('%s') AND
+					p.post_status = 'publish' AND
+					tt.taxonomy IN('%s')
 				GROUP BY t.term_id",
 			join( "', '", $args['post_types'] ),
 			join( "', '", $args['taxonomies'] )
