@@ -70,10 +70,7 @@ class sitemap extends base\hook {
 		}
 
 		// Do we have any URLs?
-		$urls = array_merge(
-			static::sitemap_post_urls(),
-			static::sitemap_term_urls()
-		);
+		$urls = static::sitemap_post_urls() + static::sitemap_term_urls();
 
 		$sitemap = sprintf(
 			static::SITEMAP_XML,
@@ -340,8 +337,10 @@ class sitemap extends base\hook {
 			$replace_values = array('&amp;', '&quot;', '&apos;', '&lt;', '&gt;');
 
 			foreach ($terms as $v) {
+				$url = get_term_link($v);
+
 				$line = array(
-					'loc'=>get_term_link($v),
+					'loc'=>$url,
 					'lastmod'=>date(
 						static::SITEMAP_DATETIME,
 						strtotime(current_time('Y-m-d 00:00:00'))
@@ -368,6 +367,7 @@ class sitemap extends base\hook {
 
 					$line_out[] = "<$k>{$line[$k]}</$k>";
 				}
+
 				$out[$url] = '<url>' . implode("\n", $line_out) . '</url>';
 			}
 		}
