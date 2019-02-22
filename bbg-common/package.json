@@ -14,6 +14,7 @@
     "grunt-sass": "*",
     "postcss-fixes": "*",
     "grunt-blobfolio": "git+ssh://git@blobfolio.com:3417/grunt-blobfolio",
-    "grunt-contrib-uglify-es": "git://github.com/gruntjs/grunt-contrib-uglify.git#harmony"
+    "grunt-contrib-uglify-es": "git://github.com/gruntjs/grunt-contrib-uglify.git#harmony",
+    "node-sass": "*"
   }
 }
