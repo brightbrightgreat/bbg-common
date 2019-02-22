@@ -1,7 +1,7 @@
 {
     "name": "bbg-common",
     "description": "Various tools for a happy and effective WordPress theme.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "type": "library",
     "homepage": "https:\/\/github.com\/brightbrightgreat\/wpskel",
     "license": "WTFPL",
