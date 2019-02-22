@@ -8,6 +8,7 @@ module.exports = function(grunt) {
 		sass: {
 			dist: {
 				options: {
+					implementation: require('node-sass'),
 					outputStyle: 'compressed',
 					sourceMap: false,
 				},

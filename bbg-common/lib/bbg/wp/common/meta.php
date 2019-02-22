@@ -394,6 +394,12 @@ class meta extends base\hook {
 			'content'=>$name,
 		);
 
+		// Type of site.
+		$out['og:type'] = array(
+			'property'=>'og:type',
+			'content'=>'website',
+		);
+
 		// Site Locale.
 		$out['og:locale'] = array(
 			'property'=>'og:locale',
@@ -440,32 +446,48 @@ class meta extends base\hook {
 
 		// Page image.
 		if ($featured) {
-			$out['og:image:url'] = array(
-				'property'=>'og:image:url',
-				'name'=>'twitter:image',
-				'content'=>wp_get_attachment_image_src($featured, 'og-img')[0],
-			);
+			$featured_img = wp_get_attachment_image_src($featured, 'og-img');
 
-			$out['og:image:width'] = array(
-					'property'=>'og:image:width',
-					'content'=>1200,
-			);
+			// If the image worked...
+			if (isset($featured_img[1])) {
+				// Include redundant SSL version.
+				if (is_ssl()) {
+					$out['og:image:url'] = array(
+						'property'=>'og:image',
+						'name'=>'twitter:image',
+						'content'=>$featured_img[0],
+					);
 
-			$out['og:image:height'] = array(
-				'property'=>'og:image:height',
-				'content'=>630,
-			);
+					$out['og:image:secure_url'] = array(
+						'property'=>'og:image:secure_url',
+						'content'=>$featured_img[0],
+					);
+				}
+				// Just the one.
+				else {
+					$out['og:image:url'] = array(
+						'property'=>'og:image:url',
+						'name'=>'twitter:image',
+						'content'=>$featured_img[0],
+					);
+				}
+
+				$out['og:image:width'] = array(
+						'property'=>'og:image:width',
+						'content'=>$featured_img[1],
+				);
+
+				$out['og:image:height'] = array(
+					'property'=>'og:image:height',
+					'content'=>$featured_img[2],
+				);
+			}
 		}
 
 		// Default type/author.
 		$out['author'] = array(
 			'name'=>'author',
 			'content'=>$name,
-		);
-
-		$out['og:type'] = array(
-			'property'=>'og:type',
-			'content'=>'website',
 		);
 
 		// Posts only...
@@ -524,16 +546,26 @@ class meta extends base\hook {
 		// Allow ourselves to override anything we need.
 		$out = apply_filters('bbg_common_og_meta', $out);
 
-		// Echo our meta.
+		// One pass for propertied tags.
 		foreach ($out as $item) {
-			echo '<meta ';
-
-			foreach ($item as $attr=>$value) {
-				echo $attr . '="' . $value . '" ';
-			};
-
-			echo "/>\r\n";
+			if (isset($item['property'], $item['content'])) {
+				echo sprintf(
+					'<meta property="%s" content="%s" />' . "\n",
+					$item['property'],
+					$item['content']
+				);
+			}
 		}
 
+		// One pass for named tags.
+		foreach ($out as $item) {
+			if (isset($item['name'], $item['content'])) {
+				echo sprintf(
+					'<meta name="%s" content="%s" />' . "\n",
+					$item['name'],
+					$item['content']
+				);
+			}
+		}
 	}
 }
