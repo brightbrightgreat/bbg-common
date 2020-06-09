@@ -102,6 +102,7 @@ class meta extends base\hook {
 
 		// Search.
 		elseif (is_search()) {
+			$possible_xss_attempt = true;
 			$title = 'Search results for &ldquo;' . get_search_query() . '&rdquo;';
 		}
 
@@ -150,7 +151,11 @@ class meta extends base\hook {
 		r_format::decode_entities($title);
 
 		// And send it on its way.
-		return $title;
+		if ($possible_xss_attempt) {
+			return esc_attr($title);
+		} else {
+			return $title;
+		}
 	}
 
 	/**
