@@ -551,8 +551,8 @@ class meta extends base\hook {
 			if (isset($item['property'], $item['content'])) {
 				echo sprintf(
 					'<meta property="%s" content="%s" />' . "\n",
-					$item['property'],
-					$item['content']
+					\esc_attr($item['property']),
+					\esc_attr($item['content'])
 				);
 			}
 		}
@@ -562,8 +562,8 @@ class meta extends base\hook {
 			if (isset($item['name'], $item['content'])) {
 				echo sprintf(
 					'<meta name="%s" content="%s" />' . "\n",
-					$item['name'],
-					$item['content']
+					\esc_attr($item['name']),
+					\esc_attr($item['content'])
 				);
 			}
 		}
