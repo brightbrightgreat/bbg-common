@@ -102,7 +102,6 @@ class meta extends base\hook {
 
 		// Search.
 		elseif (is_search()) {
-			$possible_xss_attempt = true;
 			$title = 'Search results for &ldquo;' . get_search_query() . '&rdquo;';
 		}
 
@@ -151,11 +150,7 @@ class meta extends base\hook {
 		r_format::decode_entities($title);
 
 		// And send it on its way.
-		if ($possible_xss_attempt) {
-			return esc_attr($title);
-		} else {
-			return $title;
-		}
+		return $title;
 	}
 
 	/**
@@ -556,8 +551,8 @@ class meta extends base\hook {
 			if (isset($item['property'], $item['content'])) {
 				echo sprintf(
 					'<meta property="%s" content="%s" />' . "\n",
-					$item['property'],
-					$item['content']
+					\esc_attr($item['property']),
+					\esc_attr($item['content'])
 				);
 			}
 		}
@@ -567,8 +562,8 @@ class meta extends base\hook {
 			if (isset($item['name'], $item['content'])) {
 				echo sprintf(
 					'<meta name="%s" content="%s" />' . "\n",
-					$item['name'],
-					$item['content']
+					\esc_attr($item['name']),
+					\esc_attr($item['content'])
 				);
 			}
 		}
